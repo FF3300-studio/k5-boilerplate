@@ -1,0 +1,35 @@
+label: Banner Manager
+icon: megaphone
+      
+sections:
+  #
+  section_banner:
+    type: fields
+    fields:
+      #
+      banner_headline:
+        type: headline
+        label: Gestore dei banner
+        width: 1/1
+      #
+      banner_manager:
+        label: Aggiungi, sostituisci, rimuovi o modifica uno o più banner
+        type: structure
+        help: Puoi costruire i banner con il <strong><u>layout che preferisci</u></strong>, usando (eventualmente) del <strong><u>css custom</u></strong>, e <strong>posizionandoli nelle <u>pagine</u> e nella <u>posizione</u> [sopra/sotto]</strong> che preferisci
+        fields:
+          banner: fields/banner_layout
+          pagine:
+            label: In quali pagine va inserito?
+            type: pages
+            width: 1/2
+          posizione:
+            label: In quale posizione va inserito?
+            type: radio
+            width: 1/2
+            columns: 2
+            options:
+              sopra: sopra
+              sotto: sotto
+          on_off:
+            label: Questo banner è attivo?
+            type: toggle

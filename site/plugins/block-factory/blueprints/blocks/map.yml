@@ -1,0 +1,32 @@
+name: Map
+icon: map
+preview: fields
+wysiwyg: true
+fields:
+  title:
+    label: Titolo
+    type: text
+  latitude:
+    label: Latitudine (centro della mappa)
+    type: text
+    width: 1/3
+  longitude:
+    label: Longitudine (centro della mappa)
+    type: text
+    width: 1/3
+  zoom:
+    label: Zoom mappa
+    type: number
+    width: 1/3
+  map_style:
+    label: Stringa per customizzare la grafica della mappa [mapbox]
+    type: text
+    width: 1/3
+  map_key:
+    label: Key associata alla mappa [mapbox]
+    type: text
+    width: 1/3
+  collection:
+    label: Pagina genitore dei marker
+    type: pages
+    max: 1

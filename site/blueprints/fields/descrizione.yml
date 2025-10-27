@@ -1,0 +1,6 @@
+label: Descrizione SEO / Sottotitolo
+type: textarea
+size: medium
+width: 1/2
+help: Questo testo sarà usato anche per la descrizione SEO<br><strong>⚠️ consigliamo di stare nei <u>300 caratteri</u></strong>
+counter: true

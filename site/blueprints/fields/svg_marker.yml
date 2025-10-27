@@ -1,0 +1,5 @@
+label: Svg del marker per le mappe
+type: files
+max: 1
+width: 1/2
+whenQuery: collection_options = 'map' && collection_categories_manager_toggle = false

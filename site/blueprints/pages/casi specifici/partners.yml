@@ -1,0 +1,45 @@
+title: Partners
+icon: document
+
+options: options/changetemplate
+
+tabs:
+  #
+  proprieta:
+    label: Proprietà
+    fields:
+      attuali:
+        label: Attuali
+        type: structure
+        fields:
+          immagine:
+            label: Immagine
+            type: files
+            max: 1
+          testo:
+            label: Nome partner
+            type: text
+          tipo:
+            label: Tipo partner
+            type: text
+      passati:
+        label: Passati
+        type: structure
+        fields:
+          immagine:
+            label: Immagine
+            type: files
+            max: 1
+          testo:
+            label: Nome partner
+            type: text
+          tipo:
+            label: Tipo partner
+            type: text
+  #
+  contenuto: fields/layout
+
+  parametri: fields/configurazione
+    
+
+

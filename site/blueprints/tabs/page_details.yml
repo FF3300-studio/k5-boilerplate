@@ -1,0 +1,90 @@
+type: group
+icon: document
+
+fields:
+
+  intro_label:
+    label: Dettagli del contenuto
+    type: headline
+
+  immagine:
+    extends: fields/immagine
+    label: Seo image
+    help: Inserisci solo se il prodotto è visibile
+    width: 1/2
+    max: 1
+
+  thumbnail:
+    extends: fields/immagine
+    label: Thumbnail
+    help: Questa immagine sarà usata anche per la SEO <br><strong>✨ puoi usare anche una <strong><u>gif</u></strong></strong>
+    type: files
+    width: 1/2
+    max: 1
+
+  descrizione:
+    extends: fields/descrizione
+
+  dove:
+    extends: fields/dove
+
+  child_category_selector:
+    extends: fields/child_category_selector
+
+  parent_category_manager:
+    extends: fields/parent_category_manager
+
+  appuntamenti:
+    extends: fields/appuntamenti
+
+  deadline:
+    extends: fields/deadline
+
+  num_max:
+    extends: fields/num_max
+
+  correlati:
+    extends: fields/correlati
+  
+  team:
+    extends: fields/team
+
+  default_marker:
+    extends: fields/svg_marker
+
+  locator:
+    extends: fields/locator
+
+  locator_line:
+    type: line
+    whenQuery: collection_options = 'map' && collection_toggle = true
+
+  zoom_mappa:
+    extends: fields/zoom
+
+  centro_mappa:
+    extends: fields/centro_mappa
+
+  map_style:
+    extends: fields/map_style
+
+  map_key:
+    extends: fields/map_key
+
+  pagination_line:
+    type: line
+    when:
+      collection_toggle: true
+      collection_pagination: true
+    
+  collection_pagination_prev:
+    extends: fields/collection_pagination_prev
+
+  collection_pagination_number:
+    extends: fields/collection_pagination_number
+
+  collection_pagination_next:
+    extends: fields/collection_pagination_next
+
+  keywords:
+    extends: fields/keywords

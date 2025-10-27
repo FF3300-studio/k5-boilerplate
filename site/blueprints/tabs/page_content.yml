@@ -1,0 +1,59 @@
+icon: book
+type: group
+
+fields:
+  layout_label:
+    label: Componi la pagina
+    type: headline
+  contenuto:
+    label: Aggiungi righe e colonne, riempile con blocchi di qualsiasi tipologia
+    type: layout
+    settings: fields/layout_settings
+    layouts: 
+      - "1/1"
+      - "1/2, 1/2"
+      - "1/3, 1/3, 1/3"
+      - "1/4, 1/2, 1/4"
+      - "1/6, 2/3, 1/6"
+      - "1/4, 1/4, 1/2"
+      - "1/2, 1/4, 1/4"
+      - "1/4, 1/4, 1/4, 1/4"
+      - "1/6, 5/6"
+      - "5/6, 1/6"
+      - "1/6, 1/3, 1/3, 1/6"
+      - "1/3, 1/6, 1/3, 1/6"
+      - "1/6, 1/3, 1/6, 1/3"
+      - "1/6, 1/6, 2/3"
+      - "2/3, 1/6, 1/6"
+      - "1/6, 1/6, 1/6, 1/2"
+      - "1/2, 1/6, 1/6, 1/6"
+      - "1/6, 1/6, 1/6, 1/6, 1/6, 1/6"
+    fieldsets:
+      text:
+        label: Typography
+        type: group
+        fieldsets:
+          - heading
+          - titles
+          - text
+          - cta
+          - markdown
+          - list
+          - line
+      media:
+        label: Media
+        type: group
+        fieldsets:
+          - image
+          - video
+          - localvideo
+          - slider
+          - imagetextbuttons
+          - grid
+          - map
+          - people
+      utility:
+        label: Utility
+        type: group
+        fieldsets:
+          - form

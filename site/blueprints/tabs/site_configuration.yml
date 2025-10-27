@@ -1,0 +1,113 @@
+label: Impostazioni
+icon: checklist
+      
+sections:
+  #
+  section_logo:
+    type: fields
+    fields:
+      #
+      logo_headline:
+        type: headline
+        label: Logo
+        width: 1/1
+      #
+      logo_switch:
+        label: Tipologia di logo
+        type: radio
+        width: 1/2
+        options: 
+          logo: icona / simbolo
+          logotype: tipografia
+        columns: 2
+        default: logo
+        help: Scegli tra le due tipologie di input
+      #
+      logotype:
+        label: Logo tipografico
+        type: text
+        width: 1/2
+        when: 
+          logo_switch: logotype
+      #
+      logo:
+        label: Logo Header
+        type: files
+        width: 1/2
+        when: 
+          logo_switch: logo
+        max: 1
+        help: Carica il logo <b>in formato .SVG</b>
+      #
+      separator_a:
+        type: line
+      #
+      search_headline:
+        type: headline
+        label: Ricerca
+        width: 1/1
+      #
+      ricerche_frequenti:
+        label: ricerche frequenti
+        type: structure
+        fields:
+          testo:
+            label: testo 
+            type: text
+      #
+      separator_2:
+        type: line
+      #
+      menu_headline:
+        type: headline
+        label: Menu
+        width: 1/1
+      #
+      menu:
+        type: structure
+        label: Aggiungi, sostituisci o rimuovi una o più voci del menu
+        help: Puoi anche inserire delle sotto-voci nel menu
+        width: 1/1
+        fields:
+          isMobile:
+            type: toggle
+            label: Solo mobile?
+            width: 1/2
+          isExternal:
+            type: toggle
+            label: Link esterno?
+            width: 1/2
+          linkTitle:
+            type: text
+            label: Titolo del link
+            width: 1/2
+          pageLink:
+            label: Pagina associata
+            type: pages
+            max: 1
+            when:
+              isExternal: false
+          externalLink:
+            type: text
+            label: Link associato
+            when:
+              isExternal: true     
+  #
+  # Qua ci va il footer…
+  section_footer:
+    headline: Footer 
+    type: fields
+    fields:
+      #
+      separator_3:
+        type: line
+      #
+      footer_headline:
+        type: headline
+        label: Footer
+        width: 1/1
+      #
+      footer: fields/footer_layout
+  
+
+        

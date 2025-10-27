@@ -1,0 +1,6 @@
+Sitemap: https://www.lascuolaopensource.xyz/sitemap
+
+User-agent: *
+
+Allow: *
+Allow: *?*

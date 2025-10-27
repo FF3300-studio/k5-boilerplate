@@ -1,0 +1,6 @@
+type: files
+accept: image/jpeg, image/png, image/gif
+layout: cards
+size: big
+image:
+  cover: true 

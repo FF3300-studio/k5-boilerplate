@@ -1,0 +1,28 @@
+title: Promozione
+icon: document
+
+options: options/changetemplate
+
+tabs:
+  #
+  proprieta: fields/proprieta
+  #
+  contenuto: fields/layout
+  #
+  # sottopagine: tabs/pagine
+  #
+  configurazione: 
+    extends: fields/configurazione
+    fields:
+      descrizione:
+        width: 1/2
+      data_inizio_toggle:
+        default: true
+      data_fine_toggle:
+        default: true
+      prezzo_promozione_toggle:
+        default: true
+      pass_toggle:
+        default: true
+      
+

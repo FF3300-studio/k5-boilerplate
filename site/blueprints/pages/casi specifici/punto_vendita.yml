@@ -1,0 +1,26 @@
+title: Punto vendita
+icon: document
+
+options: options/changetemplate
+
+tabs:
+  #
+  proprieta: fields/proprieta
+  #
+  # contenuto: fields/layout
+  #
+  # sottopagine: tabs/pagine
+  #
+  configurazione: 
+    extends: fields/configurazione
+    fields:
+      locator_toggle:
+        default: true
+      categorie_punti_vendita_toggle:
+        default: true
+      orariapertura_toggle: 
+        default: true
+      contatti_punto_vendita_toggle:
+        default: true
+
+

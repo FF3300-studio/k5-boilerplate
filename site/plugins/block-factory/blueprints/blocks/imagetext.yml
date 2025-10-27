@@ -1,0 +1,23 @@
+name: Image + text
+icon: box
+preview: fields
+wysiwyg: true
+fields:
+  layout:
+    label: Layout
+    type: radio
+    default: image-text
+    columns: 2
+    options:
+      image-text: Immagine sinistra / testo destra
+      text-image: Testo sinistra / immagine destra
+  image:
+    label: Immagine
+    type: files
+    max: 1
+  title:
+    label: Titolo
+    type: text
+  text:
+    label: Testo
+    type: writer

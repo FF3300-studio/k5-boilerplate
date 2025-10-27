@@ -1,0 +1,14 @@
+title: Site
+unlisted: true
+
+tabs:
+  #
+  contents: tabs/site_content
+  #
+  banner: tabs/site_banner_manager
+  #
+  people: tabs/site_people_manager
+  #
+  impostazioni: tabs/site_configuration
+  #
+  seo: tabs/site_seo

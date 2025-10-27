@@ -1,0 +1,1 @@
+<a class="<?php if($page->title() == strtolower($item->linkTitle()->or(Url::short($item->externalLink()->value())))): ?>active<?php endif ?>"><?= $item->linkTitle()->or(Url::short($item->externalLink()->value())) ?></a>

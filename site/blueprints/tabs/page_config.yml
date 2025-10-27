@@ -1,0 +1,53 @@
+icon: toggle-on
+type: group
+
+columns:
+  - width: 1/1
+    fields:
+      config_label:
+        label: Configurazione del contenuto
+        type: headline
+
+      parent_collection_options:
+        type: hidden
+
+      parent_categories_toggle:
+        type: hidden
+    
+      collection_toggle:
+        label: Questa pagina è una COLLECTION?
+        help: Questa pagina è "genitrice" di altre pagine "figlie"?
+        type: toggle
+        default: false
+        width: 1/2
+
+      collection_options:
+        label: Tipologia di COLLECTION
+        help: Indica che tipo di vista desideri per la <strong>COLLECTION</strong>
+        type: toggles
+        default: false
+        width: 1/2
+        when:
+          collection_toggle: true
+        options:
+          blog: blog
+          map: map
+          calendar: calendar
+
+      collection_categories_manager_toggle:
+        label: Gestore delle categorie
+        help: Vuoi che questa <strong>COLLECTION</strong> disponga di categorie?
+        type: toggle
+        default: false
+        width: 1/2
+        when:
+          collection_toggle: true
+
+      collection_pagination:
+        label: Gestore della paginazione
+        help: Vuoi che questa <strong>COLLECTION</strong> disponga di paginazione?
+        type: toggle
+        default: false
+        width: 1/2
+        whenQuery: collection_toggle = true && collection_options != 'map'   
+

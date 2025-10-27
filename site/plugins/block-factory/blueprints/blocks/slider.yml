@@ -1,0 +1,92 @@
+name: Slider
+icon: image
+preview: fields
+wysiwyg: true
+fields:
+  slider:
+    type: structure
+    label: Inserisci e/o modifica una o più slide
+    fields:
+      #
+      title:
+        label: Titolo slide
+        type: text
+      #
+      descrizione:
+        label: Testo più piccolo
+        type: textarea
+        size: medium
+      #
+      selector:
+        width: 1/2
+        label: Immagine o video?
+        type: select
+        options:
+          pics: pics
+          video: video
+      #
+      pics:
+        width: 1/2
+        label: Immagine
+        type: files
+        max: 1
+        when:
+          selector: pics
+      #
+      video:
+        width: 1/2
+        label: Video
+        type: files
+        max: 1
+        when:
+          selector: video
+      #
+      crop:
+        label: Immagine ritagliata?
+        type: toggle
+        when:
+          selector: pics
+      #
+      extra_layer:
+        label: Fondino a contrasto?
+        type: toggle
+      #
+      container_custom_css:
+        label: Custom css per il container di tutte le cta
+        type: code-editor
+      #
+      cta:
+        type: structure
+        label: Inserisci e/o modifica una o più cta
+        fields:  
+          cta_custom_css:
+            label: Custom css per la singola cta
+            type: code-editor
+          switch:
+            type: radio
+            columns: 3
+            options:
+              - download
+              - url
+              - pagina
+          anteprima:
+            type: text
+            width: 1/2
+          download:
+            type: files
+            max: 1
+            width: 1/2
+            when:
+              switch: download
+          url:
+            type: text
+            width: 1/2
+            when:
+              switch: url
+          page: 
+            type: pages
+            max: 1
+            width: 1/2
+            when:
+              switch: pagina
+

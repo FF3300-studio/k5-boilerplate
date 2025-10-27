@@ -1,0 +1,6 @@
+label: Key associata alla mappa [mapbox]
+type: text
+width: 1/2
+default: pk.eyJ1IjoiZGF2aWRlZ2lvcmdldHRhIiwiYSI6ImNtMjk1MmFubTAyMXQycXF1ZXVyaTYyMjYifQ.d87xqkbSyGWG8s0xJFfIKg
+help: la stringa ha un aspetto simile a "pk.eyJ1IjoiZGF…"
+whenQuery: collection_options = 'map' && collection_toggle = true

@@ -1,0 +1,6 @@
+label: Zoom mappa itinerario
+help: Qui andrà inserito il valore di zoom della mappa dell'itinerario
+width: 1/2
+type: number
+size: medium
+whenQuery: collection_options = 'map' && collection_toggle = true

@@ -1,0 +1,41 @@
+fields:
+  custom_css:
+    label: Inserisci qui del CSS relativo al banner
+    type: code-editor
+  sticky:
+    label: Funzione scroll sticky
+    type: toggle
+    default: false
+    width: 1/2
+  sticky_offset:
+    label: Valore dell'offset dello sticky
+    type: number
+    width: 1/2
+    default: 100
+  custom_id:
+    label: Questo layout ha un ID?
+    type: text
+    width: 1/2
+    when:
+      anchor: false
+  anchor:
+    label: Ancora
+    type: toggle
+    text: Questa sezione ha un'ancora
+    width: 1/2
+  anchor_name:
+    label: Nome ancora
+    type: text
+    width: 1/2
+    when:
+      anchor: true
+  scadenza:
+    label: Scade?
+    type: toggle
+  #   width: 1/2
+  # data_scadenza:
+  #   label: Data di scadenza
+  #   type: date
+  #   width: 1/2
+  #   when:
+  #     scadenza: true

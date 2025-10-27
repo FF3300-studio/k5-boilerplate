@@ -1,0 +1,4 @@
+label: Geo-localizzazione
+type: locator
+width: 1/2
+whenQuery: collection_toggle = false && parent_collection_options = 'map'   

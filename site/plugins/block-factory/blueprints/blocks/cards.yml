@@ -1,0 +1,21 @@
+name: Cards
+icon: question
+preview: fields
+wysiwyg: true
+fields:
+  title:
+    label: Titolo
+    type: text
+  layout:
+    label: Layout
+    type: radio
+    default: slider
+    columns: 2
+    options:
+      slider: Slider
+      grid: Grid
+  collection:
+    label: Cards
+    type: pages
+    query: site.index
+    multiple: true  # Set to false if you want only single selection

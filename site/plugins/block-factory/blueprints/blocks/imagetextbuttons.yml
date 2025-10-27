@@ -1,0 +1,55 @@
+name: Image + text + buttons
+icon: box
+preview: fields
+wysiwyg: true
+fields:
+  image:
+    label: Immagine
+    type: files
+    max: 1
+  title:
+    label: Titolo
+    type: text
+  text:
+    label: Testo
+    type: writer
+  custom_css:
+    label: Custom css per il blocco
+    type: code-editor 
+  container_custom_css:
+    label: Custom css per il container di tutte le cta
+    type: code-editor
+  cta:
+    type: structure
+    label: Inserisci e/o modifica una o più cta
+    fields:  
+      cta_custom_css:
+        label: Custom css per la singola cta
+        type: code-editor
+      switch:
+        type: radio
+        columns: 3
+        options:
+          - download
+          - url
+          - pagina
+      anteprima:
+        type: text
+        width: 1/2
+      download:
+        type: files
+        max: 1
+        width: 1/2
+        when:
+          switch: download
+      url:
+        type: text
+        width: 1/2
+        when:
+          switch: url
+      page: 
+        type: pages
+        max: 1
+        width: 1/2
+        when:
+          switch: pagina

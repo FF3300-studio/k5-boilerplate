@@ -1,0 +1,5 @@
+label: Numero massimo di partecipanti?
+help: Se non c'è un numero massimo di partecipanti non compilare questo campo
+width: 1/2
+type: number
+whenQuery: collection_toggle = false && parent_collection_options = 'calendar' &&  parent_collection_options != NULL

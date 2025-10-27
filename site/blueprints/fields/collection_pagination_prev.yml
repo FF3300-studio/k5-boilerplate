@@ -1,0 +1,8 @@
+label: Comando per tornare indietro nella paginazione
+help: Indica la parola da usare come label per il bottone relativo
+type: text
+width: 1/3
+default: "contenuti precedenti"
+when:
+  collection_toggle: true
+  collection_pagination: true

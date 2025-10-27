@@ -1,0 +1,48 @@
+label: Source
+icon: box
+
+columns:
+  - width: 1/1
+    fields:
+      csv_url:
+        label: URL CSV
+        type: url
+        width: 1/2
+      alias_map:
+        label: Mappa alias
+        type: structure
+        fields:
+          header:
+            label: Header CSV
+            type: text
+          alias:
+            label: Alias
+            type: text
+          filter:
+            label: Usare come filtro?
+            type: toggle
+            text:
+              - "No"
+              - "Sì"
+      include_only:
+        label: Importa solo alias mappati
+        type: toggle
+        width: 1/4
+        text:
+          - No (tutti)
+          - Sì (solo mappati)
+      page_size:
+        label: Risultati per pagina (default)
+        type: number
+        width: 1/4 
+        default: 20
+      cache_ttl:
+        label: Cache CSV (secondi)
+        type: number
+        width: 1/4
+        default: 300
+      fallback:
+        label: Testo di fallback
+        type: text
+        width: 1/4
+        default: …

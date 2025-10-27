@@ -1,0 +1,14 @@
+title: Default Page
+icon: document
+
+options: options/changetemplate
+
+tabs:
+  #
+  anteprima: tabs/page_details
+  #
+  contenuto: tabs/page_content
+  #
+  configurazione: tabs/page_config
+  #
+  sottopagine: tabs/page_childs

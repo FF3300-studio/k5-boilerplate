@@ -1,0 +1,11 @@
+title: Spreadsheet
+
+options: options/changetemplate
+
+tabs:
+  #
+  anteprima: tabs/page_details
+  #
+  contenuto: tabs/page_content
+  #
+  configurazione: tabs/get_source

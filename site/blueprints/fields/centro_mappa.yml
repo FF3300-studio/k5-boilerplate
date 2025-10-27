@@ -1,0 +1,8 @@
+label: Centro mappa itinerario
+help: Qui andrà scelto il luogo che sarà il centro della mappa dell'itinerario
+type: select
+width: 1/2
+whenQuery: collection_options = 'map' && collection_toggle = true
+options: 
+  type: query
+  query: page.children

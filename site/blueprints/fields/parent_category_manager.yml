@@ -1,0 +1,27 @@
+label: Lista delle categorie valide
+help: Definisci le categorie valide per questa collection
+type: structure
+when:
+  collection_toggle: true
+  collection_categories_manager_toggle: true
+fields:
+  nome:
+    label: Nome della categoria
+    type: text
+    width: 1/2
+  colore_categoria:
+    label: Colore della categoria
+    type: color
+    width: 1/2
+  descrizione:
+    label: Descrizione della categoria
+    type: textarea
+  gruppo:
+    label: Gruppo di cui fa parte la categoria
+    type: tags
+    help: usa <strong><u>SOLO LETTERE MINUSCOLE</u></strong> [no numeri, no maiuscole, no altri segni]
+    width: 1/2
+  marker:
+    extends: ./fields/svg_marker
+    label: Svg del marker per le mappe
+    width: 1/2

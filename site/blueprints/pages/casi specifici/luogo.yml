@@ -1,0 +1,40 @@
+title: Luogo
+icon: document
+
+options: options/changetemplate
+
+tabs:
+  #
+  proprieta: fields/proprieta
+  #
+  contenuto: fields/layout
+  #
+  # sottopagine: tabs/pagine
+  #
+  configurazione: 
+    extends: fields/configurazione
+    fields:
+      categorie_luoghi_toggle:
+        default: true
+      province_toggle:
+        default: true
+      locator_toggle:
+        default: true
+      indirizzo_luogo_toggle:
+        default: true
+      inclusi_toggle:
+        default: true
+      sconti_toggle:
+        default: true
+      prezzo_luogo_toggle:
+        default: true
+      orariapertura_toggle:
+        default: true
+      contatti_luogo_toggle:
+        default: true
+      sitoweb_toggle:
+        default: true
+      immagini_luogo_toggle:
+        default: true
+
+

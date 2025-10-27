@@ -1,0 +1,5 @@
+label: Deadline [opzionale]
+help: Se non c'è una deadline non compilare questo campo
+width: 1/2
+type: date
+whenQuery: collection_toggle = false && parent_collection_options = 'calendar' &&  parent_collection_options != NULL

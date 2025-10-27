@@ -1,0 +1,16 @@
+title: Punti vendita
+icon: folder
+
+options: options/changetemplate
+
+tabs:
+  #
+  anteprima: fields/proprieta
+  #
+  contenuto: fields/layout
+  #
+  sottopagine: tabs/pagine_punti_vendita
+  #
+  parametri: fields/configurazione
+
+ 

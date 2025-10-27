@@ -1,0 +1,73 @@
+label: Sottopagine
+icon: folder-structure
+
+columns:
+  - width: 1/4
+    fields:
+      pages_label:
+        label: Collection
+        type: headline
+
+  - width: 3/4
+    sections:
+
+      intro_collection_true:
+        label: Cosa trovo qui?
+        type: info
+        text: Gli oggetti contenuti nella collezione
+        when:
+          collection_toggle: true
+
+      intro_collection_false:
+        label: Cosa trovo qui?
+        type: info
+        text: Al momento nulla, perché questa pagina non è configurata come una collezione
+        when:
+          collection_toggle: false
+
+  - width: 1/2
+    sections:
+
+      general_listed:
+        headline: Pagine pubblicate 
+        type: pages
+        layout: list
+        sortable: true
+        status: listed
+        when:
+          collection_toggle: true
+        image:
+          cover: true
+          ratio: 3/1
+          query: page.cover.toFile
+          
+  - width: 1/2
+    sections:
+
+      general_draft:
+        headline: Bozze 
+        type: pages
+        status: draft
+        layout: list
+        sortable: true
+        when:
+          collection_toggle: true
+        image:
+          cover: true
+          ratio: 3/1
+          query: page.cover.toFile
+
+      general_unlisted:
+        headline: Non indicizzate 
+        type: pages
+        status: unlisted
+        layout: list
+        sortable: true
+        when:
+          collection_toggle: true
+        image:
+          cover: true
+          ratio: 3/1
+          query: page.cover.toFile
+
+

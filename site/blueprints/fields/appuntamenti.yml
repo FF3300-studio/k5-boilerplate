@@ -1,0 +1,16 @@
+label: Date e orari
+type: structure
+whenQuery: collection_toggle = false && parent_collection_options = 'calendar' &&  parent_collection_options != NULL
+width: 1/2
+fields:
+  giorno:
+    label: Data di inizio
+    type: date        
+  orario_inizio:
+    label: Orario di inizio
+    type: time
+    width: 1/2
+  orario_fine:
+    label: Orario di fine
+    type: time
+    width: 1/2

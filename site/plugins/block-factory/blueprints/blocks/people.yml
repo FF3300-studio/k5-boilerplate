@@ -1,0 +1,9 @@
+name: People
+icon: account
+preview: fields
+wysiwyg: true
+fields:
+  title:
+    label: Chips con le persone
+    type: info
+

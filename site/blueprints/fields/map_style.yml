@@ -1,0 +1,6 @@
+label: Stringa per customizzare la grafica della mappa [mapbox]
+type: text
+width: 1/2
+default: "mapbox://styles/mapbox/light-v11"
+help: la stringa ha un aspetto simile a "mapbox://styles/mapbox/light-v11"
+whenQuery: collection_options = 'map' && collection_toggle = true

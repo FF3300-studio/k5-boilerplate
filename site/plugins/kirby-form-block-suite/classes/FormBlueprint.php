@@ -1,0 +1,271 @@
+<?php
+
+namespace microman;
+
+/**
+ * @package   Kirby Form Block Suite
+ * @author    Roman Gsponer <kirby@microman.ch>
+ * @link      https://microman.ch/
+ * @copyright Roman Gsponer
+ * @license   https://license.microman.ch/license/ 
+ */
+
+use Kirby\Filesystem\Dir;
+use Kirby\Filesystem\F;
+use Kirby\Toolkit\Str;
+use Kirby\Data\Yaml;
+
+class FormBlueprint
+{
+
+        /**
+     * Get form tab
+     * 
+     * @return array
+     **/
+    /*
+    public static function getBlock(): array
+    {
+        return [
+            'name' => 'form.block.fromfields',
+            'icon' => 'form',
+            'fields' => [
+                'id' => [
+                    'type' => 'select',
+                    'default' => [
+                        'id' => ''
+                    ],
+                    'options' => [
+                        'type'  => 'query',
+                        'query' => 'site.drafts',
+                        'text'  => '{{page.name}}'
+                    ]
+                ]                
+            ]
+        ];
+    }
+    */
+
+    /**
+     * Get Blueprint as array
+     * 
+     * @param Array $path Filename or path of Bluepring
+     * 
+     * @return array
+     */
+    public static function getBlueprint(String $path, Bool $merge = false): array
+    {
+
+        $plugindata = Yaml::read(__DIR__ . "/../blueprints/$path.yml");
+        $userfile = kirby()->root('blueprints') . "/$path.yml";
+        if (F::exists($userfile)) {
+            return $merge ? array_merge($plugindata, Yaml::read($userfile)) : Yaml::read($userfile);
+        }
+
+        return $plugindata;
+    }
+
+
+
+    /**
+     * Get inbox tab
+     * 
+     * @return array|bool
+     */
+    public static function getInbox()
+    {
+        if (!static::isEnabled('inbox')) {
+            return false;
+        };
+
+        return [
+            'label' => 'Inbox',
+            'fields' => [
+                'formid' => ['type' => 'hidden'],
+                'mailview' => [
+                    //You can find the license validation in the file: lib/FormLicense.php
+                    "license" => !FormLicense::checkLicense(),
+                    'type' => 'mailview'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Get form tab
+     * 
+     * @return array
+     */
+    public static function getForm(): array
+    {
+        return [
+            'label' => 'Formfields',
+            'fields' => static::getFormfields()
+        ];
+    }
+
+    /**
+     * Get option tab
+     * 
+     * @return array
+     */
+    public static function getOptions(): array
+    {
+        return [
+            'label' => 'Options',
+            'fields' => static::mergeField(
+                [
+                    'name' => [
+                        'type' => 'hidden'
+                    ],
+                    'info' => static::getInfoText()
+                ],
+                (static::isEnabled('notify')) ?  Yaml::read(__DIR__ . "/../blueprints/snippets/form_notify.yml") : [],
+                (static::isEnabled('confirm')) ?  Yaml::read(__DIR__ . "/../blueprints/snippets/form_confirm.yml") : [],
+                static::getBlueprint('snippets/form_options')
+            )
+        ];
+    }
+
+    /**
+     * Merge field in formfield
+     * 
+     * @param array $fields Formfields to merge
+     * 
+     * @return array
+     */
+    public static function mergeField(array ...$fields): array
+    {
+        $out = [];
+        foreach ($fields as $collection) {
+            foreach ($collection as $key => $value) {
+                $out[$key] = $value;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * Get formfields from user/plugin blueprints
+     * 
+     * @return array
+     */
+    private static function getFormfields(): array
+    {
+
+        $fieldsets = [];
+
+        $out = [];
+
+        $customfields = static::getBlueprint('blocks/customfields', true);
+
+        $fieldsets = static::mergeFormfields(__DIR__ . '/../blueprints/blocks/formfields', $fieldsets, $customfields);
+        
+        if (Dir::exists($userlocation = kirby()->root('blueprints') . '/blocks/formfields')) {
+            $fieldsets = static::mergeFormfields($userlocation, $fieldsets, $customfields);
+        }
+
+        return [
+            'formfields'    => [
+                'type' => 'blocks',
+                'fieldsets' => $fieldsets
+            ],
+            'display'       => [
+                'type' => 'text',
+                'label' => 'Formfields display',
+                'help' => 'form.block.fromfields.display.help'
+            ]
+        ];
+    }
+
+    /**
+     * Merge field in formfield
+     * 
+     * @param string $formblockfolder Path to blueprint
+     * @param array $out Previous blueprint
+     * @param array $customfields Fields to add on each formfield
+     * 
+     * @return array
+     */
+    private static function mergeFormfields(string $formblockfolder, array $out, array $customfields): array
+    {
+        foreach (Dir::read($formblockfolder, null, true) as $f) {
+
+            //Convert formblock to array
+            $this_block = Yaml::read($f);
+            $identifier = 'formfields_' . pathinfo($f)['filename'];
+
+            if (count($this_block) == 0) {
+
+                //Users formblock is empty -> delete formblock from plugin 
+                unset($out[$identifier]);
+            } else {
+                //Merge custom- and user-fields and add it to fieldset-array
+                $this_block['fields'] = array_merge($customfields, $this_block['fields']);
+                $this_block['label'] = "{{ label }}";
+                $out[$identifier] = $this_block;
+            }
+        };
+        return $out;
+    }
+
+    /**
+     * Get info text from placeholderfields 
+     * 
+     * @return array|bool
+     */
+    private static function getInfoText()
+    {
+
+        if (!static::isEnabled('placeholder_hint')) {
+            return false;
+        };
+
+        $text = '**With *\{\{  \}\}* you can insert incoming values using placeholder.**';
+        foreach (static::getPlaceholders() as $key => $value) {
+            $text .= "\n**\{\{ $key \}\}**: ".$value['label'];
+        }
+        return [
+            'text' => $text
+        ];
+
+    }
+
+    /**
+     * Users/plugin placeholders
+     * 
+     * @return array
+     */
+    public static function getPlaceholders(): array
+    {
+        return array_merge([
+            'summary' => [
+                'label' => "Summary",
+                'value' => function ($fields) {
+
+                    $table = "<table>";
+
+                    foreach ($fields as $field) {
+                        $table .= "<tr><td valign='top'>" . $field->label() . "</td><td>" . nl2br($field->value()) . "</td></tr>";
+                    }
+
+                    $table .= "</table>";
+                    return $table;
+                }
+            ]
+        ], kirby()->option('microman.formblock.placeholders') ?? []);
+    }
+
+    /**
+     * Check if tab/function is enabled in config
+     * 
+     * @param string $fnc 
+     * 
+     * @return bool
+     */
+    private static function isEnabled($fnc): bool
+    {
+        return empty(kirby()->option("microman.formblock.disable_$fnc"));
+    }
+
+}

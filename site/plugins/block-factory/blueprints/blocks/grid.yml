@@ -1,0 +1,13 @@
+name: Grid
+icon: dashboard
+preview: fields
+wysiwyg: true
+fields:
+  title:
+    label: Titolo
+    type: text
+  collection:
+    label: Pages
+    type: pages
+    query: site.index
+    multiple: true  # Set to false if you want only single selection

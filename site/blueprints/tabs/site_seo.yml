@@ -1,0 +1,91 @@
+label: Seo
+icon: star
+#
+columns:
+
+  - width: 1/1
+    fields:
+
+      intro_pagine:
+        label: Cosa trovo qui?
+        type: info
+        text: In questa sezione trovi le informazioni generali per la SEO
+
+  - width: 1/2
+    fields:
+
+      alt_name:
+        label: Nome alternativo
+        type: text
+      #
+      descrizione:
+        label: Descrizione generalle del sito
+        type: textarea
+        size: medium
+        maxlength: 160
+      #
+      tags:
+        label: Parole chiave del sito
+        type: text
+        maxlength: 160
+      #
+      address:
+        label: Indirizzo 
+        type: text
+      #
+      tel:
+        label: Telefono 
+        type: text
+        width: 1/2
+      #
+      city:
+        label: Città 
+        type: text
+        width: 1/2
+      #
+      region:
+        label: Regione
+        type: text
+        width: 1/2
+      #
+      country:
+        label: Paese 
+        width: 1/2
+        type: text
+      #
+      cap:
+        label: CAP 
+        width: 1/2
+        type: text
+  #
+  - width: 1/2
+    fields:
+      seo_image:
+        label: Immagine per la seo (placeholder)
+        type: files
+        layout: cards
+        size: big
+        max: 1
+      
+      fb_app_id:
+        label: Codice numerico FB APP ID
+        type: text
+        width: 1/2
+        help: 12131231…
+
+      fb_domain_verification:
+        label: Codice alfanumerico FB DOMAIN VERIFICATION
+        type: text
+        width: 1/2
+        help: 5hrcdvxveg18sdld3subnct…
+      
+      account_x:
+        label: Account X
+        type: text
+        width: 1/2
+        help: "@…"
+      
+      copyright:
+        label: Copyright [chi possiede il brand?]
+        type: text
+        width: 1/2

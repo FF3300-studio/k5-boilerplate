@@ -1,0 +1,61 @@
+name: CTA
+icon: url
+preview: fields
+wysiwyg: true
+fields:
+  container_custom_css:
+    label: Custom css per il container di tutte le cta
+    type: code-editor
+  cta:
+    type: structure
+    label: Inserisci e/o modifica una o più cta
+    fields:  
+      cta_custom_css:
+        label: Custom css per la singola cta
+        type: code-editor
+      switch:
+        type: radio
+        columns: 3
+        options:
+          - download
+          - url
+          - pagina
+      anteprima:
+        type: text
+        width: 1/2
+      download:
+        type: files
+        max: 1
+        width: 1/2
+        when:
+          switch: download
+      url:
+        type: text
+        width: 1/2
+        when:
+          switch: url
+      page: 
+        type: pages
+        max: 1
+        width: 1/2
+        when:
+          switch: pagina
+      slug: 
+        type: text
+        label: eventuale slug
+        max: 1
+        width: 1/2
+        when:
+          switch: pagina
+      shape:
+        label: Forma
+        type: radio
+        options:
+          square: square
+          round: round
+      contrast:
+        label: Contrasto
+        type: radio
+        options:
+          positive: positive
+          negative: negative

@@ -1,0 +1,33 @@
+enable_confirm:
+  type: toggle
+  label: Enable confirm
+
+confirm_email:
+  label: Confirm e-mail
+  type: text
+  pattern: ^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$
+  help: 
+  width: 1/2
+  when:
+    enable_confirm: true
+
+confirm_subject:
+  label: Confirm subject
+  type: text
+  help:
+  width: 1/2
+  when:
+    enable_confirm: true
+
+confirm_body:
+  label: Confirm body
+  type: textarea
+  help: "Inserisci il messaggio di conferma. Puoi usare Markdown."
+  buttons: true
+  when:
+    enable_confirm: true
+
+line2:
+  type: line
+  when:
+    enable_confirm: true

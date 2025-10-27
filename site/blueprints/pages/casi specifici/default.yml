@@ -1,0 +1,16 @@
+title: Default Page
+icon: document
+
+options: options/changetemplate
+
+tabs:
+  #
+  anteprima: fields/proprieta
+  #
+  contenuto: fields/layout
+  #
+  sottopagine: tabs/pagine
+  #
+  parametri: fields/configurazione
+
+ 

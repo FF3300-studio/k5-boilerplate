@@ -1,0 +1,5 @@
+label: Luogo
+type: pages
+query: site.index.filterBy("collection_options", "map").children
+width: 1/2
+whenQuery: collection_toggle = false && parent_collection_options = 'calendar' &&  parent_collection_options != NULL 

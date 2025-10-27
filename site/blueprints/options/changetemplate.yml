@@ -1,0 +1,6 @@
+changeTemplate:
+    - default
+    - home
+    - categories
+    - newsletter
+

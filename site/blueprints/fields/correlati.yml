@@ -1,0 +1,5 @@
+label: Contenuti correlati
+help: Aggiungi/sostituisci/rimuovi una o più pagine
+width: 1/2
+type: pages
+whenQuery: collection_toggle = false && parent_collection_options != NULL

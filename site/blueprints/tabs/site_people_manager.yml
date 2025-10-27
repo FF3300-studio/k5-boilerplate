@@ -1,0 +1,29 @@
+label: Persone 
+icon: users
+
+columns:
+
+  - width: 1/1
+    fields:
+      persone:
+        label: Persone
+        type: structure
+        fields:
+          nome: 
+            label: Nome e cognome
+            type: text
+          socio:
+            label: È socio/a?
+            type: toggle
+          # bio:
+          #   label: Bio
+          #   type: textarea
+          # url:
+          #   label: Sito web
+          #   type: url
+          #   width: 1/2
+          # immagine:
+          #   label: Foto
+          #   type: files
+          #   max: 1
+          #   width: 1/2

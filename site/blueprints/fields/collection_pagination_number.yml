@@ -1,0 +1,8 @@
+label: Quanti contenuti per ogni pagina della paginazione?
+help: Indica il numero di contenuti da stampare per pagina
+type: number
+width: 1/3
+default: "9"
+when:
+  collection_toggle: true
+  collection_pagination: true

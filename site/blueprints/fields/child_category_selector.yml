@@ -1,0 +1,13 @@
+label: Selettore delle Categorie
+help: Associa una o più categorie a questa pagina
+type: multiselect
+width: 1/2
+max: 3
+options:
+  type: query
+  query: page.categoriesOptions
+  text: "{{ item.nome }}"
+  value: "{{ item.nome }}"
+when:
+  collection_toggle: false
+  parent_categories_toggle: "true"

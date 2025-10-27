@@ -1,0 +1,30 @@
+title: Itinerario
+icon: document
+
+options: options/changetemplate
+
+tabs:
+  #
+  proprieta: fields/proprieta
+  #
+  contenuto: fields/layout
+  #
+  # sottopagine: tabs/pagine
+  #
+  configurazione: 
+    extends: fields/configurazione
+    fields:
+      categorie_itinerari_toggle:
+        default: true
+      tappe_toggle:
+        default: true
+      pass_toggle:
+        default: true
+      durata_itinerario_toggle:
+        default: true
+      descrizione_itinerario_toggle:
+        default: true
+      zoom_mappa_itinerario_toggle:
+        default: true
+      centro_mappa_itinerario_toggle:
+        default: true

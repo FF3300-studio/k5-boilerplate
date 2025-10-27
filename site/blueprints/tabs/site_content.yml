@@ -1,0 +1,130 @@
+label: Contenuti 
+icon: folder-structure
+
+columns:
+
+
+  - width: 1/1
+    fields:
+      intro_section_pages:
+        type: headline
+        label: Pagine generiche
+        help: <span style="color:gray">I contenuti nella parte superiore sono le <strong><u>pagine generiche</u></strong> <strong>(<u>pubblicate</u></strong>, <strong><u>bozze</u></strong> e <strong><u>non indicizzate</u></strong>)</span>
+
+  - width: 3/4
+    sections:
+
+      general_listed:
+        headline: Pubblicate 
+        type: pages
+        layout: cards
+        size: medium
+        query: site.children.listed.filterBy('collection_toggle', '!=', 'true')
+        status: listed
+        image:
+          cover: true
+          ratio: 16/9
+          
+
+  - width: 1/4
+    sections:
+
+      general_draft:
+        headline: Bozze 
+        type: pages
+        status: draft
+        layout: list
+        image:
+          cover: true
+          ratio: 3/1
+          
+
+      general_unlisted:
+        headline: Non indicizzate 
+        type: pages
+        status: unlisted
+        layout: list
+        image:
+          cover: true
+          ratio: 3/1
+          
+
+  - width: 1/1
+    fields:
+
+      line_a:
+        type: line
+
+  - width: 1/1
+    fields:
+      intro_section_collection:
+        type: headline
+        label: Collezioni di pagine (e relative sotto-pagine)
+        help: <span style="color:gray">Per creare una nuova <strong><u>sotto-pagina</u></strong> all'interno di una <strong><u>collezione</u></strong> entrare nella collezione, andare nel <strong><u>TAB "sotto-pagine"</u></strong> e aggiungere lì una nuova pagina.</span>
+
+  - width: 3/4
+    sections:
+
+      children_listed:
+        headline: Contenuti pubblicati nelle collezioni 
+        type: pages
+        query: site.index.children.listed.filterBy('collection_toggle','false')
+        text:  <strong><span style="font-size:100%; ">{{ page.title }}</strong></span><br><div style="padding-top:5px; margin-top:5px; border-top:1px solid silver; width:100%">→ 📁 <span style="color:silver;">{{ page.parent.uri }}</span></div>
+        status: listed
+        layout: cards
+        size: medium
+        image:
+          cover: true
+          ratio: 16/9
+
+  - width: 1/4
+    sections:
+
+      collection_listed:
+        headline: 📁 Collezioni pubblicate 
+        type: pages
+        query: site.index.listed.filterBy('collection_toggle','true')
+        status: listed
+        image:
+          cover: true
+          ratio: 16/9
+          
+
+
+          
+
+
+  # #A seguire ci sono i field per visualizzare i figli delle diverse tipologie di collection (attualmente ne abbiamo 3, potrebbero aumentare)
+
+  # - width: 1/3
+  #   sections:
+
+  #     map_listed:
+  #       label: Luoghi 
+  #       # label: "{site.children.filterBy('collection_options','map').first.title}}"children
+  #       type: pages
+  #       parent: site.children.filterBy('collection_options','map').first
+  #       query: site.children.filterBy('collection_options','map').first.children
+  #       template: default
+
+  # - width: 1/3
+  #   sections:
+
+  #     blog_listed:
+  #       label: Notizie 
+  #       #label: "{{site.children.filterBy('collection_options','blog').first.title}}" children
+  #       type: pages
+  #       parent: site.children.filterBy('collection_options','blog').first
+  #       query: site.children.filterBy('collection_options','blog').first.children
+  #       template: default
+
+  # - width: 1/3
+  #   sections:
+  #     calendar_listed:
+  #       label: Eventi / Attività
+  #       #label: "{{site.children.filterBy('collection_options','calendar').first.title}}" children
+  #       type: pages
+  #       parent: site.children.filterBy('collection_options','calendar').first
+  #       query: site.children.filterBy('collection_options','calendar').first.children
+  #       template: default
+
