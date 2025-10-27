@@ -8,12 +8,24 @@ use Kirby\Toolkit\Str;
 class SpreadsheetPage extends Page
 {
     /** per-request caches */
-    protected static ?string $csvBodyCache = null;
-    protected static ?int    $rowCountCache = null;      // conteggio risultati (post-filtri) per la richiesta corrente
-    protected static ?array  $rowMapCache = null;        // slug => content (per item O(1))
-    protected static ?array  $filtersIndexCache = null;  // alias => [values] tokenizzati per la richiesta corrente
-    protected static $searchPoolCache = null;            // Pages di TUTTE le righe (senza limiti/filtri) per la search
+    protected static array $csvBodyCache = [];
+    protected static array $rowCountCache = [];          // conteggio risultati (post-filtri) per la richiesta corrente
+    protected static array $rowMapCache = [];            // slug => content (per item O(1))
+    protected static array $filtersIndexCache = [];      // alias => [values] tokenizzati per la richiesta corrente
+    protected static array $searchPoolCache = [];        // Pages di TUTTE le righe (senza limiti/filtri) per la search
     protected array          $filters = [];              // alias marcati come filtrabili nel Panel
+
+    protected function clearLocalCache(): void
+    {
+        $id = $this->id();
+        unset(
+            self::$csvBodyCache[$id],
+            self::$rowCountCache[$id],
+            self::$rowMapCache[$id],
+            self::$filtersIndexCache[$id],
+            self::$searchPoolCache[$id]
+        );
+    }
 
     /* ===== Utils di percorso ===== */
     protected function requestPath(): string
@@ -105,12 +117,17 @@ public function filterColors(): array
             return null;
         }
 
-        if (self::$csvBodyCache !== null) {
-            return self::$csvBodyCache;
+        $id = $this->id();
+
+        if (array_key_exists($id, self::$csvBodyCache)) {
+            return self::$csvBodyCache[$id];
         }
 
         $csvUrl = $this->content()->get('csv_url')->value();
-        if (!$csvUrl) return null;
+        if (!$csvUrl) {
+            $this->clearLocalCache();
+            return null;
+        }
 
         $defaults    = $this->sheetDefaults();
         $kirbyCache  = $this->kirby()->cache('sheet');
@@ -121,7 +138,7 @@ public function filterColors(): array
         // Cache calda
         if (get('refresh') !== '1') {
             if ($csv = $kirbyCache->get($keyBody)) {
-                self::$csvBodyCache = $csv;
+                self::$csvBodyCache[$id] = $csv;
                 return $csv;
             }
         }
@@ -131,6 +148,8 @@ public function filterColors(): array
         @is_dir(dirname($lockPath)) || @mkdir(dirname($lockPath), 0775, true);
         $lock = @fopen($lockPath, 'c');
         if ($lock) @flock($lock, LOCK_EX);
+
+        $csvBody = null;
 
         try {
             $meta    = $kirbyCache->get($keyMeta) ?: [];
@@ -153,22 +172,23 @@ public function filterColors(): array
             } else {
                 if ($stale = $kirbyCache->get($keyBody)) {
                     $csvBody = $stale;
-                } else {
-                    return null;
                 }
             }
         } catch (\Throwable $e) {
             if ($stale = $kirbyCache->get($keyBody)) {
                 $csvBody = $stale;
-            } else {
-                return null;
             }
         } finally {
             if ($lock) { @flock($lock, LOCK_UN); @fclose($lock); }
         }
 
-        self::$csvBodyCache = $csvBody;
-        return $csvBody;
+        if ($csvBody !== null) {
+            self::$csvBodyCache[$id] = $csvBody;
+            return $csvBody;
+        }
+
+        $this->clearLocalCache();
+        return null;
     }
 
     /* ===== Alias (Panel override > base) + elenco campi filtrabili ===== */
@@ -211,8 +231,15 @@ public function filterColors(): array
     /** Valori UNICI tokenizzati per un alias filtrabile (ordinati) */
     public function filterValues(string $field): array
     {
-        if (self::$filtersIndexCache !== null && isset(self::$filtersIndexCache[$field])) {
-            return self::$filtersIndexCache[$field];
+        $id = $this->id();
+
+        if (isset(self::$filtersIndexCache[$id][$field])) {
+            return self::$filtersIndexCache[$id][$field];
+        }
+
+        if ($this->fetchCsvBody() === null) {
+            $this->clearLocalCache();
+            return [];
         }
 
         $values = [];
@@ -225,7 +252,7 @@ public function filterColors(): array
         $values = array_values(array_unique($values));
         sort($values, SORT_NATURAL | SORT_FLAG_CASE);
 
-        self::$filtersIndexCache[$field] = $values;
+        self::$filtersIndexCache[$id][$field] = $values;
         return $values;
     }
 
@@ -292,8 +319,15 @@ public function filterColors(): array
     /* ===== Conteggio totale righe (post-filtri se già calcolato) ===== */
 public function totalRows(): int
 {
-    if (self::$rowCountCache !== null) {
-        return self::$rowCountCache;
+    $id = $this->id();
+
+    if (array_key_exists($id, self::$rowCountCache)) {
+        return self::$rowCountCache[$id];
+    }
+
+    if ($this->fetchCsvBody() === null) {
+        $this->clearLocalCache();
+        return 0;
     }
 
     // Leggi i filtri attivi dal querystring, limitandoti agli alias marcati filtrabili
@@ -334,7 +368,7 @@ public function totalRows(): int
         $count++;
     }
 
-    self::$rowCountCache = $count;
+    self::$rowCountCache[$id] = $count;
     return $count;
 }
 
@@ -407,12 +441,17 @@ public function totalRows(): int
         $hasActiveFilters = !empty($activeFilters);
 
         // === Modalità ITEM: usa row-map dalla cache, fallback a scan ===
+        $id = $this->id();
+
         if ($childSlug = $this->requestedChildSlug()) {
             $csvBody = $this->fetchCsvBody();
-            if (!$csvBody) return new Pages([]);
+            if ($csvBody === null) {
+                $this->clearLocalCache();
+                return new Pages([]);
+            }
             $hash   = md5($csvBody);
             $mapKey = 'csvmap:' . $hash;
-            $map    = self::$rowMapCache ?? $this->kirby()->cache('sheet')->get($mapKey) ?? [];
+            $map    = self::$rowMapCache[$id] ?? $this->kirby()->cache('sheet')->get($mapKey) ?? [];
 
             if (isset($map[$childSlug])) {
                 $content = $map[$childSlug];
@@ -451,12 +490,16 @@ public function totalRows(): int
 
         // prepara row-map e filters-index key
         $csvBody = $this->fetchCsvBody();
+        if ($csvBody === null) {
+            $this->clearLocalCache();
+            return new Pages([]);
+        }
         $hash    = $csvBody ? md5($csvBody) : null;
         $cache   = $this->kirby()->cache('sheet');
         $mapKey  = $hash ? 'csvmap:' . $hash : null;
 
-        $map  = ($hash && self::$rowMapCache !== null) ? self::$rowMapCache : (($hash && $cache->get($mapKey)) ?: []);
-        $fidx = self::$filtersIndexCache ?? [];
+        $map  = ($hash && isset(self::$rowMapCache[$id])) ? self::$rowMapCache[$id] : (($hash && $cache->get($mapKey)) ?: []);
+        $fidx = self::$filtersIndexCache[$id] ?? [];
 
         foreach ($this->parseCsvRows() as $assoc) {
             // indice filtri (tokenizzato) per tutti i campi filtrabili
@@ -509,13 +552,13 @@ public function totalRows(): int
             sort($arr, SORT_NATURAL | SORT_FLAG_CASE);
             $fidx[$k] = $arr;
         }
-        self::$filtersIndexCache = $fidx;
+        self::$filtersIndexCache[$id] = $fidx;
 
         // salva caches persistenti
-        self::$rowCountCache = $total;
+        self::$rowCountCache[$id] = $total;
         if ($hash && $mapKey) {
             $cache->set($mapKey, $map, $defaults['ttl']);
-            self::$rowMapCache = $map;
+            self::$rowMapCache[$id] = $map;
         }
 
         return empty($children) ? new Pages([]) : Pages::factory($children, $this);
@@ -525,8 +568,15 @@ public function totalRows(): int
     public function searchPool(): Pages
     {
         // per-request cache: se già creato in questa richiesta, riusa
-        if (self::$searchPoolCache instanceof Pages) {
-            return self::$searchPoolCache;
+        $id = $this->id();
+
+        if (isset(self::$searchPoolCache[$id]) && self::$searchPoolCache[$id] instanceof Pages) {
+            return self::$searchPoolCache[$id];
+        }
+
+        if ($this->fetchCsvBody() === null) {
+            $this->clearLocalCache();
+            return new Pages([]);
         }
 
         $defaults = $this->sheetDefaults();
@@ -574,7 +624,7 @@ public function totalRows(): int
             $children[] = $makeChild($assoc);
         }
 
-        self::$searchPoolCache = Pages::factory($children, $this);
-        return self::$searchPoolCache;
+        self::$searchPoolCache[$id] = Pages::factory($children, $this);
+        return self::$searchPoolCache[$id];
     }
 }
