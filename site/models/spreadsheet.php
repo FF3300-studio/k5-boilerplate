@@ -118,14 +118,13 @@ class SpreadsheetPage extends Page
         }
 
         $id = $this->id();
-
         if (array_key_exists($id, self::$csvBodyCache)) {
             return self::$csvBodyCache[$id];
         }
 
         $csvUrl = $this->content()->get('csv_url')->value();
         if (!$csvUrl) {
-            $this->clearLocalCache();
+            unset(self::$csvBodyCache[$id]);
             return null;
         }
 
@@ -172,23 +171,24 @@ class SpreadsheetPage extends Page
             } else {
                 if ($stale = $kirbyCache->get($keyBody)) {
                     $csvBody = $stale;
+                } else {
+                    unset(self::$csvBodyCache[$id]);
+                    return null;
                 }
             }
         } catch (\Throwable $e) {
             if ($stale = $kirbyCache->get($keyBody)) {
                 $csvBody = $stale;
+            } else {
+                unset(self::$csvBodyCache[$id]);
+                return null;
             }
         } finally {
             if ($lock) { @flock($lock, LOCK_UN); @fclose($lock); }
         }
 
-        if ($csvBody !== null) {
-            self::$csvBodyCache[$id] = $csvBody;
-            return $csvBody;
-        }
-
-        $this->clearLocalCache();
-        return null;
+        self::$csvBodyCache[$id] = $csvBody;
+        return $csvBody;
     }
 
     /* ===== Alias (Panel override > base) + elenco campi filtrabili ===== */
@@ -232,14 +232,8 @@ class SpreadsheetPage extends Page
     public function filterValues(string $field): array
     {
         $id = $this->id();
-
-        if (isset(self::$filtersIndexCache[$id][$field])) {
+        if (isset(self::$filtersIndexCache[$id]) && array_key_exists($field, self::$filtersIndexCache[$id])) {
             return self::$filtersIndexCache[$id][$field];
-        }
-
-        if ($this->fetchCsvBody() === null) {
-            $this->clearLocalCache();
-            return [];
         }
 
         $values = [];
@@ -317,9 +311,12 @@ class SpreadsheetPage extends Page
     }
 
     /* ===== Conteggio totale righe (post-filtri se già calcolato) ===== */
-    public function totalRows(): int
-    {
-        $id = $this->id();
+public function totalRows(): int
+{
+    $id = $this->id();
+    if (array_key_exists($id, self::$rowCountCache)) {
+        return self::$rowCountCache[$id];
+    }
 
         if (array_key_exists($id, self::$rowCountCache)) {
             return self::$rowCountCache[$id];
@@ -368,9 +365,9 @@ class SpreadsheetPage extends Page
             $count++;
         }
 
-        self::$rowCountCache[$id] = $count;
-        return $count;
-    }
+    self::$rowCountCache[$id] = $count;
+    return $count;
+}
 
     /* ===== Children: item O(1) + listing single-scan con multi-filtri (AND) ===== */
     public function children(): Pages
@@ -498,6 +495,13 @@ class SpreadsheetPage extends Page
         $cache   = $this->kirby()->cache('sheet');
         $mapKey  = $hash ? 'csvmap:' . $hash : null;
 
+        if (!$csvBody) {
+            self::$filtersIndexCache[$id] = [];
+            self::$rowCountCache[$id] = 0;
+            unset(self::$rowMapCache[$id]);
+            return new Pages([]);
+        }
+
         $map  = ($hash && isset(self::$rowMapCache[$id])) ? self::$rowMapCache[$id] : (($hash && $cache->get($mapKey)) ?: []);
         $fidx = self::$filtersIndexCache[$id] ?? [];
 
@@ -559,6 +563,8 @@ class SpreadsheetPage extends Page
         if ($hash && $mapKey) {
             $cache->set($mapKey, $map, $defaults['ttl']);
             self::$rowMapCache[$id] = $map;
+        } elseif (!$hash) {
+            unset(self::$rowMapCache[$id]);
         }
 
         return empty($children) ? new Pages([]) : Pages::factory($children, $this);
@@ -569,14 +575,8 @@ class SpreadsheetPage extends Page
     {
         // per-request cache: se già creato in questa richiesta, riusa
         $id = $this->id();
-
         if (isset(self::$searchPoolCache[$id]) && self::$searchPoolCache[$id] instanceof Pages) {
             return self::$searchPoolCache[$id];
-        }
-
-        if ($this->fetchCsvBody() === null) {
-            $this->clearLocalCache();
-            return new Pages([]);
         }
 
         $defaults = $this->sheetDefaults();
