@@ -51,20 +51,34 @@ function getGroupsFromCategories($categories) {
 function getLocationsArray($collection, $categories, $defaultMarker, $activeCategories, $filterLogic) {
     $filtered = filterByCategories($collection, $activeCategories, $filterLogic); // Filtra gli elementi per categoria
 
+    $defaultMarkerUrl = $defaultMarker ? $defaultMarker->url() : null;
+
+    $markers = [];
+    foreach ($categories as $category) {
+        $slug = Str::slug($category->nome());
+        $markerFile = $category->marker()->isNotEmpty() ? $category->marker()->toFile() : null;
+        $markers[$slug] = $markerFile ? $markerFile->url() : $defaultMarkerUrl;
+    }
+
     $locations = [];
 
     foreach ($filtered as $item) {
         $location = $item->locator()->toLocation(); // Ottiene coordinate geografiche dell’elemento
-        $marker = $defaultMarker ? $defaultMarker->url() : null; // Usa marker di default
+        $marker = $defaultMarkerUrl; // Usa marker di default
 
-        $itemCategories = $item->child_category_selector()->split(','); // Divide le categorie associate all'elemento
+        $itemCategories = array_filter(array_map(
+            fn($cat) => Str::slug(trim($cat)),
+            $item->child_category_selector()->split()
+        )); // Divide le categorie associate all'elemento e le slugga
 
-        // Cerca un marker personalizzato in base alla categoria
-        foreach ($itemCategories as $catName) {
-            foreach ($categories as $category) {
-                if ($category->nome()->value() == $catName && $category->marker()->isNotEmpty()) {
-                    $marker = $category->marker()->toFile()->url(); // Usa marker personalizzato
-                    break 2; // Esce da entrambi i cicli annidati
+        foreach ($itemCategories as $slug) {
+            $markerCandidate = $markers[$slug] ?? $defaultMarkerUrl;
+
+            if ($markerCandidate) {
+                $marker = $markerCandidate;
+
+                if ($markerCandidate !== $defaultMarkerUrl) {
+                    break; // Usa il primo marker specifico disponibile
                 }
             }
         }
