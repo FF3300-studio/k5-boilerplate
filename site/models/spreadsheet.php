@@ -51,21 +51,21 @@ class SpreadsheetPage extends Page
     }
 
     /** Colori associati agli alias filtrabili */
-public function filterColors(): array
-{
-    $colors = [];
-    $struct = $this->alias_map()->isNotEmpty() ? $this->alias_map()->toStructure() : [];
-    foreach ($struct as $row) {
-        $alias = Str::slug(trim($row->alias()->value() ?? ''));
-        if ($row->filter()->toBool() && $alias !== '') {
-            $colore = trim($row->colore()->value() ?? '');
-            if ($colore !== '') {
-                $colors[$alias] = $colore;
+    public function filterColors(): array
+    {
+        $colors = [];
+        $struct = $this->alias_map()->isNotEmpty() ? $this->alias_map()->toStructure() : [];
+        foreach ($struct as $row) {
+            $alias = Str::slug(trim($row->alias()->value() ?? ''));
+            if ($row->filter()->toBool() && $alias !== '') {
+                $colore = trim($row->colore()->value() ?? '');
+                if ($colore !== '') {
+                    $colors[$alias] = $colore;
+                }
             }
         }
+        return $colors;
     }
-    return $colors;
-}
     /* ===== Tokenizer per campi con liste "A, B, C" ===== */
     protected function tokenize(?string $raw): array
     {
@@ -317,60 +317,60 @@ public function filterColors(): array
     }
 
     /* ===== Conteggio totale righe (post-filtri se già calcolato) ===== */
-public function totalRows(): int
-{
-    $id = $this->id();
+    public function totalRows(): int
+    {
+        $id = $this->id();
 
-    if (array_key_exists($id, self::$rowCountCache)) {
-        return self::$rowCountCache[$id];
-    }
-
-    if ($this->fetchCsvBody() === null) {
-        $this->clearLocalCache();
-        return 0;
-    }
-
-    // Leggi i filtri attivi dal querystring, limitandoti agli alias marcati filtrabili
-    $filterParam = $_GET['filter'] ?? [];
-    $activeFilters = [];
-    if (is_array($filterParam)) {
-        foreach ($filterParam as $alias => $valueCsv) {
-            $alias = \Kirby\Toolkit\Str::slug((string)$alias);
-            if (!in_array($alias, $this->filterableFields(), true)) {
-                continue;
-            }
-            $vals = array_values(array_unique(array_filter(array_map('trim', explode(',', (string)$valueCsv)))));
-            $vals = array_map(fn($v) => \Kirby\Toolkit\Str::slug($v), $vals);
-            if (!empty($vals)) {
-                $activeFilters[$alias] = $vals;
-            }
+        if (array_key_exists($id, self::$rowCountCache)) {
+            return self::$rowCountCache[$id];
         }
-    }
-    $hasActiveFilters = !empty($activeFilters);
 
-    // Conta le righe del CSV applicando gli stessi criteri di filtro di children()
-    $count = 0;
-    foreach ($this->parseCsvRows() as $assoc) {
-        if ($hasActiveFilters) {
-            $ok = true;
-            foreach ($activeFilters as $alias => $requiredSlugs) {
-                $rowTokensSlugs = array_map(
-                    fn($t) => \Kirby\Toolkit\Str::slug($t),
-                    $this->tokenize($assoc[$alias] ?? '')
-                );
-                if (!empty(array_diff($requiredSlugs, $rowTokensSlugs))) {
-                    $ok = false;
-                    break;
+        if ($this->fetchCsvBody() === null) {
+            $this->clearLocalCache();
+            return 0;
+        }
+
+        // Leggi i filtri attivi dal querystring, limitandoti agli alias marcati filtrabili
+        $filterParam = $_GET['filter'] ?? [];
+        $activeFilters = [];
+        if (is_array($filterParam)) {
+            foreach ($filterParam as $alias => $valueCsv) {
+                $alias = \Kirby\Toolkit\Str::slug((string)$alias);
+                if (!in_array($alias, $this->filterableFields(), true)) {
+                    continue;
+                }
+                $vals = array_values(array_unique(array_filter(array_map('trim', explode(',', (string)$valueCsv)))));
+                $vals = array_map(fn($v) => \Kirby\Toolkit\Str::slug($v), $vals);
+                if (!empty($vals)) {
+                    $activeFilters[$alias] = $vals;
                 }
             }
-            if (!$ok) continue;
         }
-        $count++;
-    }
+        $hasActiveFilters = !empty($activeFilters);
 
-    self::$rowCountCache[$id] = $count;
-    return $count;
-}
+        // Conta le righe del CSV applicando gli stessi criteri di filtro di children()
+        $count = 0;
+        foreach ($this->parseCsvRows() as $assoc) {
+            if ($hasActiveFilters) {
+                $ok = true;
+                foreach ($activeFilters as $alias => $requiredSlugs) {
+                    $rowTokensSlugs = array_map(
+                        fn($t) => \Kirby\Toolkit\Str::slug($t),
+                        $this->tokenize($assoc[$alias] ?? '')
+                    );
+                    if (!empty(array_diff($requiredSlugs, $rowTokensSlugs))) {
+                        $ok = false;
+                        break;
+                    }
+                }
+                if (!$ok) continue;
+            }
+            $count++;
+        }
+
+        self::$rowCountCache[$id] = $count;
+        return $count;
+    }
 
     /* ===== Children: item O(1) + listing single-scan con multi-filtri (AND) ===== */
     public function children(): Pages
