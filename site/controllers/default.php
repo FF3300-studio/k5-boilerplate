@@ -35,7 +35,7 @@ function getFilteredCategories($collection, $allCategories) {
 function filterByCategories($collection, $activeCategories, $logic) {
     return $collection->filter(function ($item) use ($activeCategories, $logic) {
         if (empty($activeCategories)) return true; // Nessun filtro: mostra tutto
-        $itemCategories = array_map('Str::slug', $item->child_category_selector()->split()); // Slug delle categorie dell'elemento
+        $itemCategories = array_map([Str::class, 'slug'], $item->child_category_selector()->split()); // Slug delle categorie dell'elemento
         return $logic === 'and'
             ? !array_diff($activeCategories, $itemCategories) // AND: tutte le categorie devono essere presenti
             : count(array_intersect($activeCategories, $itemCategories)) > 0; // OR: almeno una deve combaciare
@@ -52,35 +52,39 @@ function getLocationsArray($collection, $categories, $defaultMarker, $activeCate
     $filtered = filterByCategories($collection, $activeCategories, $filterLogic); // Filtra gli elementi per categoria
 
     $defaultMarkerUrl = $defaultMarker ? $defaultMarker->url() : null;
-
     $markers = [];
     foreach ($categories as $category) {
         $slug = Str::slug($category->nome());
-        $markerFile = $category->marker()->isNotEmpty() ? $category->marker()->toFile() : null;
-        $markers[$slug] = $markerFile ? $markerFile->url() : $defaultMarkerUrl;
+        $markerField = $category->marker();
+        $markerUrl = $defaultMarkerUrl;
+
+        if ($markerField && $markerField->isNotEmpty()) {
+            $file = $markerField->toFile();
+            if ($file) {
+                $markerUrl = $file->url();
+            }
+        }
+
+        $markers[$slug] = $markerUrl;
     }
 
     $locations = [];
 
     foreach ($filtered as $item) {
         $location = $item->locator()->toLocation(); // Ottiene coordinate geografiche dell’elemento
-        $marker = $defaultMarkerUrl; // Usa marker di default
 
-        $itemCategories = array_filter(array_map(
-            fn($cat) => Str::slug(trim($cat)),
-            $item->child_category_selector()->split()
-        )); // Divide le categorie associate all'elemento e le slugga
+        $itemCategories = array_filter(array_map(fn($cat) => Str::slug($cat), $item->child_category_selector()->split()));
 
+        $marker = null;
         foreach ($itemCategories as $slug) {
-            $markerCandidate = $markers[$slug] ?? $defaultMarkerUrl;
-
-            if ($markerCandidate) {
-                $marker = $markerCandidate;
-
-                if ($markerCandidate !== $defaultMarkerUrl) {
-                    break; // Usa il primo marker specifico disponibile
-                }
+            if (isset($markers[$slug]) && $markers[$slug]) {
+                $marker = $markers[$slug];
+                break;
             }
+        }
+
+        if (!$marker) {
+            $marker = $defaultMarkerUrl; // Usa marker di fallback solo se non trovato
         }
 
         // Aggiunge solo se lat/lon e marker sono validi
@@ -130,7 +134,7 @@ return function ($page, $site, $kirby) {
     // ====== INIZIALIZZAZIONE ======
     $collection = $page->children()->listed(); // Prende le pagine figlie visibili
     $allCategories = $page->parent_category_manager()->toStructure(); // Tutte le categorie disponibili
-    $activeCategories = param('category') ? array_map('Str::slug', explode('+', param('category'))) : []; // Legge le categorie attive dall'URL
+    $activeCategories = param('category') ? array_map([Str::class, 'slug'], explode('+', param('category'))) : []; // Legge le categorie attive dall'URL
     $filterLogic = param('logic') === 'and' ? 'and' : 'or'; // Logica di filtro (default OR)
 
     // ====== FILTRI E GRUPPI ======
