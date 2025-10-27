@@ -7,7 +7,7 @@ columns:
       csv_url:
         label: URL CSV
         type: url
-        width: 1/1
+        width: 1/2
       alias_map:
         label: Mappa alias
         type: structure
@@ -24,11 +24,6 @@ columns:
             text:
               - "No"
               - "Sì"
-          colore:
-            label: Colore associato al campo 
-            type: color
-            when: 
-              filter: true
       include_only:
         label: Importa solo alias mappati
         type: toggle
