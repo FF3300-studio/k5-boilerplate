@@ -9,14 +9,7 @@ function get_gmaps_url($query) {
 function get_css_bg($url) {
 	return "background-image: url('" . $url . "')";
 }
-function getCropHeightFromRatio($ratio, $width) {
-  if ($ratio === 'auto') return null;
-  if (str_contains($ratio, '/')) {
-    [$w, $h] = explode('/', $ratio);
-    return round($width * ((float)$h / (float)$w));
-  }
-  return null;
-}
+
 function get_placeholder_r() {
 	$imgpath = site()->placeholder()->toFiles()->shuffle()->first()->url();
 	return $imgpath;
@@ -197,4 +190,58 @@ function generaIdCasuale($lunghezza = 3) {
         $id .= $alfabeto[rand(0, strlen($alfabeto) - 1)];
     }
     return $id;
+}
+function lightenHex($hex, $percent) {
+    // Rimuovo l'eventuale #
+    $hex = ltrim($hex, '#');
+
+    // Converto l'esadecimale in componenti RGB
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+
+    // Converto in HSL
+    $r /= 255; $g /= 255; $b /= 255;
+    $max = max($r, $g, $b);
+    $min = min($r, $g, $b);
+    $h = $s = $l = ($max + $min) / 2;
+
+    if ($max == $min) {
+        $h = $s = 0; // grigio
+    } else {
+        $d = $max - $min;
+        $s = $l > 0.5 ? $d / (2 - $max - $min) : $d / ($max + $min);
+        switch ($max) {
+            case $r: $h = ($g - $b) / $d + ($g < $b ? 6 : 0); break;
+            case $g: $h = ($b - $r) / $d + 2; break;
+            case $b: $h = ($r - $g) / $d + 4; break;
+        }
+        $h /= 6;
+    }
+
+    // Aumento la luminosità del $percent (es. 70%)
+    $l = min(1, $l + (1 - $l) * ($percent / 100));
+
+    // Converto HSL -> RGB
+    if ($s == 0) {
+        $r = $g = $b = $l; // grigio
+    } else {
+        $q = $l < 0.5 ? $l * (1 + $s) : $l + $s - $l * $s;
+        $p = 2 * $l - $q;
+        $r = hue2rgb($p, $q, $h + 1/3);
+        $g = hue2rgb($p, $q, $h);
+        $b = hue2rgb($p, $q, $h - 1/3);
+    }
+
+    // Riconverto in hex
+    return sprintf("#%02x%02x%02x", round($r * 255), round($g * 255), round($b * 255));
+}
+
+function hue2rgb($p, $q, $t) {
+    if ($t < 0) $t += 1;
+    if ($t > 1) $t -= 1;
+    if ($t < 1/6) return $p + ($q - $p) * 6 * $t;
+    if ($t < 1/2) return $q;
+    if ($t < 2/3) return $p + ($q - $p) * (2/3 - $t) * 6;
+    return $p;
 }
