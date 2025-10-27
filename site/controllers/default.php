@@ -35,7 +35,7 @@ function getFilteredCategories($collection, $allCategories) {
 function filterByCategories($collection, $activeCategories, $logic) {
     return $collection->filter(function ($item) use ($activeCategories, $logic) {
         if (empty($activeCategories)) return true; // Nessun filtro: mostra tutto
-        $itemCategories = array_map('Str::slug', $item->child_category_selector()->split()); // Slug delle categorie dell'elemento
+        $itemCategories = array_map([Str::class, 'slug'], $item->child_category_selector()->split()); // Slug delle categorie dell'elemento
         return $logic === 'and'
             ? !array_diff($activeCategories, $itemCategories) // AND: tutte le categorie devono essere presenti
             : count(array_intersect($activeCategories, $itemCategories)) > 0; // OR: almeno una deve combaciare
@@ -134,7 +134,7 @@ return function ($page, $site, $kirby) {
     // ====== INIZIALIZZAZIONE ======
     $collection = $page->children()->listed(); // Prende le pagine figlie visibili
     $allCategories = $page->parent_category_manager()->toStructure(); // Tutte le categorie disponibili
-    $activeCategories = param('category') ? array_map('Str::slug', explode('+', param('category'))) : []; // Legge le categorie attive dall'URL
+    $activeCategories = param('category') ? array_map([Str::class, 'slug'], explode('+', param('category'))) : []; // Legge le categorie attive dall'URL
     $filterLogic = param('logic') === 'and' ? 'and' : 'or'; // Logica di filtro (default OR)
 
     // ====== FILTRI E GRUPPI ======
