@@ -1,11 +1,10 @@
 <?php
 
-use Kirby\Cms\Page;
 use Kirby\Cms\Pages;
 use Kirby\Http\Remote;
 use Kirby\Toolkit\Str;
 
-class SpreadsheetPage extends Page
+class SpreadsheetPage extends DefaultPage
 {
     /** per-request caches */
     protected static ?string $csvBodyCache = null;
