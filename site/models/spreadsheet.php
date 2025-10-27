@@ -15,6 +15,18 @@ class SpreadsheetPage extends Page
     protected static array $searchPoolCache = [];        // Pages di TUTTE le righe (senza limiti/filtri) per la search
     protected array          $filters = [];              // alias marcati come filtrabili nel Panel
 
+    protected function clearLocalCache(): void
+    {
+        $id = $this->id();
+        unset(
+            self::$csvBodyCache[$id],
+            self::$rowCountCache[$id],
+            self::$rowMapCache[$id],
+            self::$filtersIndexCache[$id],
+            self::$searchPoolCache[$id]
+        );
+    }
+
     /* ===== Utils di percorso ===== */
     protected function requestPath(): string
     {
@@ -39,21 +51,21 @@ class SpreadsheetPage extends Page
     }
 
     /** Colori associati agli alias filtrabili */
-public function filterColors(): array
-{
-    $colors = [];
-    $struct = $this->alias_map()->isNotEmpty() ? $this->alias_map()->toStructure() : [];
-    foreach ($struct as $row) {
-        $alias = Str::slug(trim($row->alias()->value() ?? ''));
-        if ($row->filter()->toBool() && $alias !== '') {
-            $colore = trim($row->colore()->value() ?? '');
-            if ($colore !== '') {
-                $colors[$alias] = $colore;
+    public function filterColors(): array
+    {
+        $colors = [];
+        $struct = $this->alias_map()->isNotEmpty() ? $this->alias_map()->toStructure() : [];
+        foreach ($struct as $row) {
+            $alias = Str::slug(trim($row->alias()->value() ?? ''));
+            if ($row->filter()->toBool() && $alias !== '') {
+                $colore = trim($row->colore()->value() ?? '');
+                if ($colore !== '') {
+                    $colors[$alias] = $colore;
+                }
             }
         }
+        return $colors;
     }
-    return $colors;
-}
     /* ===== Tokenizer per campi con liste "A, B, C" ===== */
     protected function tokenize(?string $raw): array
     {
@@ -135,6 +147,8 @@ public function filterColors(): array
         @is_dir(dirname($lockPath)) || @mkdir(dirname($lockPath), 0775, true);
         $lock = @fopen($lockPath, 'c');
         if ($lock) @flock($lock, LOCK_EX);
+
+        $csvBody = null;
 
         try {
             $meta    = $kirbyCache->get($keyMeta) ?: [];
@@ -304,43 +318,52 @@ public function totalRows(): int
         return self::$rowCountCache[$id];
     }
 
-    // Leggi i filtri attivi dal querystring, limitandoti agli alias marcati filtrabili
-    $filterParam = $_GET['filter'] ?? [];
-    $activeFilters = [];
-    if (is_array($filterParam)) {
-        foreach ($filterParam as $alias => $valueCsv) {
-            $alias = \Kirby\Toolkit\Str::slug((string)$alias);
-            if (!in_array($alias, $this->filterableFields(), true)) {
-                continue;
-            }
-            $vals = array_values(array_unique(array_filter(array_map('trim', explode(',', (string)$valueCsv)))));
-            $vals = array_map(fn($v) => \Kirby\Toolkit\Str::slug($v), $vals);
-            if (!empty($vals)) {
-                $activeFilters[$alias] = $vals;
-            }
+        if (array_key_exists($id, self::$rowCountCache)) {
+            return self::$rowCountCache[$id];
         }
-    }
-    $hasActiveFilters = !empty($activeFilters);
 
-    // Conta le righe del CSV applicando gli stessi criteri di filtro di children()
-    $count = 0;
-    foreach ($this->parseCsvRows() as $assoc) {
-        if ($hasActiveFilters) {
-            $ok = true;
-            foreach ($activeFilters as $alias => $requiredSlugs) {
-                $rowTokensSlugs = array_map(
-                    fn($t) => \Kirby\Toolkit\Str::slug($t),
-                    $this->tokenize($assoc[$alias] ?? '')
-                );
-                if (!empty(array_diff($requiredSlugs, $rowTokensSlugs))) {
-                    $ok = false;
-                    break;
+        if ($this->fetchCsvBody() === null) {
+            $this->clearLocalCache();
+            return 0;
+        }
+
+        // Leggi i filtri attivi dal querystring, limitandoti agli alias marcati filtrabili
+        $filterParam = $_GET['filter'] ?? [];
+        $activeFilters = [];
+        if (is_array($filterParam)) {
+            foreach ($filterParam as $alias => $valueCsv) {
+                $alias = \Kirby\Toolkit\Str::slug((string)$alias);
+                if (!in_array($alias, $this->filterableFields(), true)) {
+                    continue;
+                }
+                $vals = array_values(array_unique(array_filter(array_map('trim', explode(',', (string)$valueCsv)))));
+                $vals = array_map(fn($v) => \Kirby\Toolkit\Str::slug($v), $vals);
+                if (!empty($vals)) {
+                    $activeFilters[$alias] = $vals;
                 }
             }
-            if (!$ok) continue;
         }
-        $count++;
-    }
+        $hasActiveFilters = !empty($activeFilters);
+
+        // Conta le righe del CSV applicando gli stessi criteri di filtro di children()
+        $count = 0;
+        foreach ($this->parseCsvRows() as $assoc) {
+            if ($hasActiveFilters) {
+                $ok = true;
+                foreach ($activeFilters as $alias => $requiredSlugs) {
+                    $rowTokensSlugs = array_map(
+                        fn($t) => \Kirby\Toolkit\Str::slug($t),
+                        $this->tokenize($assoc[$alias] ?? '')
+                    );
+                    if (!empty(array_diff($requiredSlugs, $rowTokensSlugs))) {
+                        $ok = false;
+                        break;
+                    }
+                }
+                if (!$ok) continue;
+            }
+            $count++;
+        }
 
     self::$rowCountCache[$id] = $count;
     return $count;
@@ -419,7 +442,10 @@ public function totalRows(): int
 
         if ($childSlug = $this->requestedChildSlug()) {
             $csvBody = $this->fetchCsvBody();
-            if (!$csvBody) return new Pages([]);
+            if ($csvBody === null) {
+                $this->clearLocalCache();
+                return new Pages([]);
+            }
             $hash   = md5($csvBody);
             $mapKey = 'csvmap:' . $hash;
             $map    = self::$rowMapCache[$id] ?? $this->kirby()->cache('sheet')->get($mapKey) ?? [];
@@ -461,6 +487,10 @@ public function totalRows(): int
 
         // prepara row-map e filters-index key
         $csvBody = $this->fetchCsvBody();
+        if ($csvBody === null) {
+            $this->clearLocalCache();
+            return new Pages([]);
+        }
         $hash    = $csvBody ? md5($csvBody) : null;
         $cache   = $this->kirby()->cache('sheet');
         $mapKey  = $hash ? 'csvmap:' . $hash : null;
