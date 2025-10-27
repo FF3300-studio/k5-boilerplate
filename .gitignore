@@ -1,51 +1,50 @@
-# System files
-# ------------
-
-Icon
+# File di sistema
 .DS_Store
+Thumbs.db
+Icon?
 
-# Temporary files
-# ---------------
-
-/media/*
-!/media/index.html
-
-# Lock files
-# ---------------
-
-.lock
-
-# Editors
-# (sensitive workspace files)
-# ---------------------------
+# Configurazioni editor/IDE
+.vscode/
+.idea/
 *.sublime-workspace
-/.vscode
-/.idea
+*.swp
+*.swo
 
-# -------------SECURITY-------------
-# NEVER publish these files via Git!
-# -------------SECURITY-------------
+# Dipendenze e cache Node
+node_modules/
+npm-debug.log*
+.yarn*
+.pnp.*
+.vite/
 
-# Cache Files
-# ---------------
+# Output Vite/Sass
+assets/build/
+assets/build/**/*
+assets/js/*.map
 
-/site/cache/*
-!/site/cache/index.html
+# Dipendenze Composer
+vendor/
+kirby/vendor/
 
-# Accounts
-# ---------------
+# Contenuti generati da Kirby
+content/
+media/
+storage/
+site/cache/
+!site/cache/index.html
+site/accounts/
+!site/accounts/index.html
+site/sessions/
+!site/sessions/index.html
 
-/site/accounts/*
-!/site/accounts/index.html
+# Config locali e log
+site/config/_local.php
+site/config/*.log
+site/config/*.cache
+site/config/.license
+php_errorlog
+*.log
 
-# Sessions
-# ---------------
-
-/site/sessions/*
-!/site/sessions/index.html
-
-# License
-# ---------------
-
-/site/config/.license
-/site/config/config.starterkit.test.php
+# Variabili ambiente
+.env
+.env.*
