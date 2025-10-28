@@ -1,0 +1,47 @@
+name: Collection Manager
+icon: dashboard
+preview: fields
+wysiwyg: true
+
+fields:
+  title:
+    label: Titolo
+    type: text
+    width: 1/2
+
+  collection:
+    label: Collezione
+    type: pages
+    query: site.index
+    multiple: true
+    width: 1/2
+
+  typology:
+    label: Tipologia di gestione
+    type: radio
+    width: 1/2
+    options:
+      manuale: 'Manuale'
+      filtrata: 'Filtrata'
+
+  layout:
+    label: Layout componente
+    type: radio
+    width: 1/2
+    options:
+      griglia: 'Griglia'
+      carosel: 'Carosel'
+
+  active_category:
+    label: Slug Categoria attiva
+    type: text
+    width: 1/2
+    when:
+      typology: filtrata
+
+  max_number:
+    label: Numero massimo di oggetti
+    type: number
+    width: 1/2
+    when:
+      typology: filtrata

@@ -161,6 +161,43 @@ panel.plugin("cookbook/block-factory", {
         }
       }
     },
+    collection_manager: {
+      computed: {
+        // Access the fields from the blueprint
+        title() {
+          return this.field("title");
+        },
+        collection_manager() {
+          return this.field("collection_manager");
+        },
+      },
+      template: `
+        <h1>Collection_manager</h1>
+        <div class="k-block-type-collection_manager">
+          <h2>{{ title }}</h2>
+          <ul>
+            <li v-for="page in collection_manager" :key="page.id">
+              <a :href="page.url">{{ page.title }}</a>
+              <p>{{ page.yourField }}</p> <!-- Replace 'yourField' with the actual field name you need -->
+            </li>
+          </ul>
+        </div>
+      `,
+      methods: {
+        // Ensure you handle how to fetch and process pages correctly
+        fetchPageData() {
+          // Assuming 'luoghi' field contains page references; adjust as needed
+          return this.luoghi.map(page => {
+            return {
+              id: page.id,
+              url: page.url,
+              title: page.title,
+              yourField: page.yourField // Replace with the actual field name you need
+            };
+          });
+        }
+      }
+    },
     imagetext: {
       computed: {
         layout() {

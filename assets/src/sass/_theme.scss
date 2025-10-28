@@ -1,4 +1,4 @@
-@use "../../build/node_modules/bootstrap/scss/bootstrap" as *;
+@use "bootstrap/scss/bootstrap" as *;
 /* FONT WEIGHT */
 /* Qui puoi definire le diverse tipologie di pesi che userai */
 $font-regular: 400;
@@ -339,8 +339,8 @@ h5 {
   margin-bottom: $spacer * 2;
   @include media-breakpoint-down(sm) {
     margin-bottom: $spacer-sm;
-    padding-left: $spacer-sm*2;
-    padding-right: $spacer-sm*2;
+    padding-left: $spacer-sm;
+    padding-right: $spacer-sm;
  }
   // Rimuove padding da tutte le colonne figlie responsive
   [class^="col-"] {
@@ -1264,7 +1264,7 @@ hr {
         padding-bottom: 0;
       }
       .single-cards {
-        width: 25vw;
+        // width: 25vw;
         margin-right: $spacer * 2;
         @include media-breakpoint-up(xl) {
           margin-right: $spacer-xl * 2;
@@ -2458,7 +2458,7 @@ h2.text {
   .card-image-container {
     position: relative;
     width: 100%;
-    padding-top: 50%; // Aspect ratio 16:9
+    padding-top: 115%; // Aspect ratio 16:9
     overflow: hidden;
     img {
       position: absolute;
@@ -2904,3 +2904,205 @@ h2.title{
 
   }
 }
+/* ============== COLLECTION MANAGER ============== */
+/* Blocchi, griglia e carosello scroll-snap (CSS-only) */
+
+.cm-block {
+  --cm-gap: #{$spacer};
+  margin: 0 auto $spacer*2;
+
+  @include media-breakpoint-up(xl) {
+    --cm-gap: #{$spacer-xl};
+    margin-bottom: $spacer-xl*2;
+  }
+  @include media-breakpoint-down(sm) {
+    --cm-gap: #{$spacer-sm};
+    margin-bottom: $spacer-sm*2;
+  }
+}
+
+/* Header + titolo + chip filtro attivo */
+.cm-block__header {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacer/3;
+  margin: $spacer/3;
+
+  @include media-breakpoint-up(xl) { margin: $spacer-xl/3; }
+  @include media-breakpoint-down(sm) { margin: $spacer-sm/3; }
+}
+
+* .row .blocks .cm-block__title {
+  @extend %large;
+  font-family: "extrabold", Helvetica, Arial, sans-serif;
+  margin-left: 0!important;
+  margin-right: auto!important;
+}
+
+.cm-chip {
+    display: inline-block;
+    padding: 6px 10px;
+    font-weight: 900;
+    background-color: gray;
+    color: lightgray;
+    margin-left: 15px;
+    border: 2px solid gray;
+}
+
+/* Card condivisa (griglia + carosello) */
+.cm-card {
+  background-color: $color-white;
+  border: 2px solid $color-black;
+  border-radius: 2vw;
+  overflow: hidden;
+  transition: transform .12s ease, box-shadow .12s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 $color-black;
+  }
+}
+
+.cm-card__link {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.cm-card__media {
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  background: $color-filter-bar;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.cm-card__body {
+  padding: $spacer $spacer*1.25;
+
+  @include media-breakpoint-up(xl) { padding: $spacer-xl $spacer-xl*1.25; }
+  @include media-breakpoint-down(sm) { padding: $spacer-sm $spacer-sm*1.25; }
+}
+
+.cm-card__title {
+  @extend %medium;
+  font-family: "extrabold", Helvetica, Arial, sans-serif;
+  margin: 0 0 $spacer/4 0;
+
+  @include media-breakpoint-up(xl) { margin-bottom: $spacer-xl/4; }
+  @include media-breakpoint-down(sm) { margin-bottom: $spacer-sm/4; }
+}
+
+.cm-card__excerpt {
+  @extend %small;
+  color: $color-black;
+  margin: 0;
+}
+
+/* ============== Layout: griglia ============== */
+.cm-grid {
+  display: flex;
+  padding: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  @include media-breakpoint-down(sm) { 
+    flex-direction: column;
+  }
+}
+
+/* ============== Layout: carosello ============== */
+/* CSS-only, scroll-snap orizzontale. Compatibile con touch/trackpad. */
+.cm-carousel {
+  position: relative;
+  padding: 0;
+}
+.cm-carousel .single-cards, .cm-carousel .col-lg-4 {
+    min-width: 27vw!important;
+    max-width: calc(33vw - $spacer)!important;
+    width: auto!important;
+    margin: 0!important;
+    margin-bottom: $spacer!important;
+    @include media-breakpoint-up(xl) { 
+    max-width: 27vw!important;
+    }
+    @include media-breakpoint-down(sm) { 
+    min-width: 75vw!important;
+    }
+}
+.cm-grid .single-cards, .cm-grid .col-lg-4 {
+    max-width: calc(32.5vw - $spacer)!important;
+    width: auto!important;
+    margin: calc($spacer/2)!important;
+    margin-bottom: $spacer!important;
+    margin-top: 0!important;
+    @include media-breakpoint-down(md) { 
+    max-width: calc(48.5vw - $spacer)!important;
+    }
+    @include media-breakpoint-down(sm) { 
+    margin: calc($spacer-sm/2)!important;
+    margin-bottom: $spacer-sm!important;
+    margin-top: 0!important;
+    min-width: calc(100% - $spacer-sm)!important;
+    }
+}
+.cm-carousel__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  gap: var(--cm-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: $spacer/2;
+
+  /* scrollbar "soft" */
+  &::-webkit-scrollbar { height: 8px; }
+  &::-webkit-scrollbar-thumb {
+    background: $color-filter-bar;
+    border-radius: 100vw;
+  }
+}
+
+.cm-card--slide {
+  scroll-snap-align: start;
+}
+
+/* Variante compatibile con la tua estetica “chips/border” */
+.cm-card--grid,
+.cm-card--slide {
+  .cm-card__body {
+    background: $color-white;
+  }
+}
+
+/* (Opzionale) Bottoni prev/next: solo stile, aggancia JS se li aggiungi nello snippet
+.cm-carousel__prev,
+.cm-carousel__next {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  width: $spacer*3;
+  height: $spacer*3;
+  border-radius: 100vw;
+  background: $color-black;
+  color: $color-white;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  @include media-breakpoint-up(xl) { width: $spacer-xl*3; height: $spacer-xl*3; }
+  @include media-breakpoint-down(sm) { display: none; } // su mobile basta lo swipe
+}
+.cm-carousel__prev { left: $spacer*1.5; }
+.cm-carousel__next { right: $spacer*1.5; }
+*/

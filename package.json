@@ -4,15 +4,15 @@
   "description": "<img src=\"http://getkirby.com/assets/images/github/starterkit.jpg\" width=\"300\">",
   "main": "index.js",
   "scripts": {
-    "dev": "php -S localhost:8000 kirby/router.php", 
+    "dev": "php -S localhost:8000 kirby/router.php",
     "build": "vite build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "bootstrap": "^5.3.3",
-    "sass": "^1.83.0",
+    "bootstrap": "^5.3.8",
+    "sass": "^1.93.2",
     "vite": "^6.0.3",
     "vite-plugin-live-reload": "^3.0.4"
   },

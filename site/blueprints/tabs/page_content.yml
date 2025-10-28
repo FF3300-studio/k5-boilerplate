@@ -50,6 +50,7 @@ fields:
           - slider
           - imagetextbuttons
           - grid
+          - collection_manager
           - map
           - people
       utility:

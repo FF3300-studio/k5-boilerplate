@@ -2,12 +2,39 @@ name: Grid
 icon: dashboard
 preview: fields
 wysiwyg: true
+
 fields:
   title:
     label: Titolo
     type: text
+    width: 1/2
+
   collection:
-    label: Pages
+    label: Collezione
     type: pages
     query: site.index
-    multiple: true  # Set to false if you want only single selection
+    multiple: true
+    width: 1/2
+
+fields:
+  title:
+    label: Titolo
+    type: text
+    width: 2/6
+
+  collection:
+    label: Collezione
+    type: pages
+    query: site.index
+    multiple: true
+    width: 2/6
+
+  active_category:
+    label: Slug Categoria attiva
+    type: text
+    width: 1/6
+
+  max_number:
+    label: Numero massimo di oggetti
+    type: number
+    width: 1/6

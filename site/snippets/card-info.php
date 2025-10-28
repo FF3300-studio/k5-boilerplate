@@ -67,7 +67,7 @@
 <?php if($item->appuntamenti()->isNotEmpty()): ?>
     <div>
         <div class="team-label"><p style="margin: 0 auto; margin-top: 15px; margin-bottom: 0;"><strong>Appuntamenti:</strong></p></div>
-        <hr style="margin: 0; margin-top: 15px; border: none; border-bottom: 1px solid gray;">
+        <hr style="margin: 0; margin-top: 15px; border: none; border-bottom: 1px solid black;">
         <?php $appuntamenti = $item->appuntamenti()->toStructure() ?>
         <div class="cards-dates" style="display: flex; width: 100%; justify-content: space-between; flex-wrap:wrap;">
             <?php foreach($appuntamenti as $appuntamento): ?>
