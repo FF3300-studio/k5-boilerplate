@@ -2,15 +2,6 @@ label: Seo
 icon: star
 #
 columns:
-
-  - width: 1/1
-    fields:
-
-      intro_pagine:
-        label: Cosa trovo qui?
-        type: info
-        text: In questa sezione trovi le informazioni generali per la SEO
-
   - width: 1/2
     fields:
 

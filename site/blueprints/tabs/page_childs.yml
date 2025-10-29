@@ -14,6 +14,8 @@ columns:
       intro_collection_true:
         label: Cosa trovo qui?
         type: info
+        theme: warning
+        icon: list-bullet
         text: Gli oggetti contenuti nella collezione
         when:
           collection_toggle: true
@@ -21,6 +23,8 @@ columns:
       intro_collection_false:
         label: Cosa trovo qui?
         type: info
+        theme: warning
+        icon: alert
         text: Al momento nulla, perché questa pagina non è configurata come una collezione
         when:
           collection_toggle: false

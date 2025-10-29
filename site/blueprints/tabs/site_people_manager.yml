@@ -2,7 +2,6 @@ label: Persone
 icon: users
 
 columns:
-
   - width: 1/1
     fields:
       persone:
