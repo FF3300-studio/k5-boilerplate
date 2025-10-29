@@ -1,16 +1,20 @@
 label: Persone e responsabilità
 width: 1/2
 type: structure
-whenQuery: collection_toggle = false && parent_collection_options != 'map' &&  parent_collection_options != NULL 
+whenQuery: collection_toggle = false && parent_collection_options = 'calendar' &&  parent_collection_options != NULL 
+
 fields:
   persona:
-    label: Scegli una persona
-    type: select
-    options: query
-    query:
-      fetch: site.persone.toStructure
-      text: "{{ structureItem.nome }}"
-      value: "{{ structureItem.nome }}"
+    label: Nome e cognome della persona
+    type: text
+    # –––
+    # label: Scegli una persona
+    # type: select
+    # options: query
+    # query:
+    #   fetch: site.index.listed.filterBy('title','Community').children 
+    #   text: "{{ page.title }}"
+    #   value: "{{ page.title }}"
   ruolo:
     label: Indica il ruolo o la mansione
     type: text
