@@ -1,4 +1,0 @@
-@use "../settings/fonts" as font-settings;
-@use "../tools/fonts" as font-tools;
-
-@include font-tools.load-fonts(font-settings.$font-definitions);
