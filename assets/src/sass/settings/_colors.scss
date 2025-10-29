@@ -1,0 +1,35 @@
+@use "sass:map";
+
+$color-palette: (
+  white: #fff,
+  black: #000,
+  primary: #fff,
+  secondary: #fff,
+  theme: #b6d71d,
+  theme-bis: #ce0058,
+  hover: #9157f3,
+  yellow: #ffcc34,
+  magenta: #e55185,
+  cyan: #059fdb,
+  green: #b6d71d,
+  red: #d2195a,
+  purple: #9157f3,
+  neutral-dark: #9c9b9b,
+  filter-bar: #e1e1e1,
+) !default;
+
+$color-white: map.get($color-palette, white) !default;
+$color-black: map.get($color-palette, black) !default;
+$color-primary: map.get($color-palette, primary) !default;
+$color-secondary: map.get($color-palette, secondary) !default;
+$color-theme: map.get($color-palette, theme) !default;
+$color-theme-bis: map.get($color-palette, theme-bis) !default;
+$color-hover: map.get($color-palette, hover) !default;
+$color-yellow: map.get($color-palette, yellow) !default;
+$color-magenta: map.get($color-palette, magenta) !default;
+$color-cyan: map.get($color-palette, cyan) !default;
+$color-green: map.get($color-palette, green) !default;
+$color-red: map.get($color-palette, red) !default;
+$color-purple: map.get($color-palette, purple) !default;
+$color-neutral-dark: map.get($color-palette, neutral-dark) !default;
+$color-filter-bar: map.get($color-palette, filter-bar) !default;

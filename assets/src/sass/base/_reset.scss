@@ -1,0 +1,35 @@
+@use "../settings/colors" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none !important;
+}
+
+* .active {
+  background-color: $color-hover !important;
+  color: $color-white !important;
+}
+
+* figure.video {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+* a {
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  &:hover {
+    cursor: pointer !important;
+  }
+}
