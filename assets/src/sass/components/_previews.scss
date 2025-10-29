@@ -1,0 +1,299 @@
+@use "../settings" as *;
+@use "../tools/responsive" as *;
+@use "../base/typography";
+/* ANTEPRIMA CARDS PER LE GRIDS */
+// =========================
+// Card Master
+// =========================
+.card-master {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background-color: whitesmoke;
+  filter: blur(100%); // ⚠️ valuta se necessario
+  text-decoration: none;
+  margin: 0;
+  // min-height: 100%; 
+  @include media-breakpoint-up(xl) {
+    margin: 0;
+  }
+  @include media-breakpoint-down(sm) {
+    margin: 0;
+  }
+  &:hover {
+    text-decoration: none;
+    * {
+      color: $color-hover;
+    }
+    .cards-categories span.tag {
+      background-color: $color-hover;
+    }
+  }
+  .cards-title {
+    margin-top: 0;
+  }
+  .cards-text p {
+    margin-top: $spacer / 2;
+  }
+  .cards-dates span,
+  .cards-place span {
+    font-size: 18px;
+    width: auto;
+  }
+  .card-image-container {
+    position: relative;
+    width: 100%;
+    padding-top: 115%; // Aspect ratio 16:9
+    overflow: hidden;
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: auto;
+      height: 100%;
+      min-width: 100%;
+      object-fit: cover;
+    }
+  }
+}
+.card-master *,
+.card-master * * {
+  color: $color-black;
+  transition: 0.1s ease;
+  min-width: 100%;
+}
+// =========================
+// Card Container / Tag / Meta
+// =========================
+.cards-locator {
+  margin: $spacer 0;
+  @include media-breakpoint-up(xl) {
+    margin: $spacer-xl 0;
+  }
+  @include media-breakpoint-down(sm) {
+    margin: $spacer-sm 0;
+  }
+}
+.cards-categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-bottom: $spacer;
+}
+.related-content-container {
+  margin-bottom: $spacer * 1.5;
+}
+.paginator {
+  margin-top: $spacer * 4;
+  @include media-breakpoint-up(xl) {
+    margin-top: $spacer-xl * 4;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-top: $spacer-sm * 4;
+  }
+  .single-filter {
+    background-color: $color-black;
+    &:hover {
+      background-color: $color-hover;
+    }
+  }
+}
+.time {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 50%;
+  flex-grow: 2;
+  @include media-breakpoint-down(sm) {
+    font-size: $small;
+  }
+}
+// =========================
+// Tag
+// =========================
+span.tag {
+  font-size: 75%;
+  min-width: 0;
+  flex-grow: 0;
+  margin: $spacer-sm / 2 $spacer $spacer-sm / 2 0;
+  border-radius: 100vw;
+  padding: 7.5px 10px 6px;
+  background-color: gray;
+  color: $color-white !important;
+  border: 1px solid gray !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  &.parent {
+    background-color: $color-white !important;
+    color: gray !important;
+    border-color: gray !important;
+  }
+}
+// =========================
+// Related & Siblings
+// =========================
+ul.siblings {
+  background-color: $color-theme-bis;
+  li {
+    @extend %small;
+    * {
+      color: $color-black;
+    }
+    &:hover * {
+      color: $color-hover;
+    }
+  }
+}
+a.related span {
+  color: $color-black;
+  &:hover {
+    color: $color-hover;
+  }
+}
+// =========================
+// Card items & responsive
+// =========================
+.single-cards {
+  padding: 0;
+  margin: 0 $spacer; 
+  min-width: calc(25% - $spacer*2); 
+  max-width: calc(33% - $spacer*2); 
+  flex-grow: 0;
+  margin-bottom: $spacer * 2;
+  @include media-breakpoint-up(xl) {
+    margin: 0 $spacer-xl; 
+    margin-bottom: $spacer-xl * 2;
+  }
+  @include media-breakpoint-down(md) {
+    margin: 0 $spacer-sm; 
+    margin-bottom: $spacer-sm * 2;
+  }
+  @include media-breakpoint-down(sm) {
+    min-width: calc(50% - $spacer-sm*2); 
+    max-width: calc(50% - $spacer-sm*2); 
+    margin: 0 $spacer-sm; 
+    margin-bottom: $spacer-sm * 2;
+  }
+  @include media-breakpoint-down(xs) {
+    min-width: calc(100% - $spacer-sm*2); 
+    max-width: calc(100% - $spacer-sm*2); 
+    flex-grow: 1;
+    margin: 0 $spacer-sm; 
+    margin-bottom: $spacer-sm * 2;
+  }
+}
+.cards-details {
+  position: relative;
+  width: 100%;
+  @include media-breakpoint-down(sm) {
+    padding: $spacer-sm * 1.5;
+  }
+  p {
+    margin: 0;
+  }
+  .location {
+    margin-top: $spacer;
+  }
+}
+#deadline {
+  @include media-breakpoint-down(sm) {
+    min-width: fit-content !important;
+  }
+}
+span#deadline.mobile,
+span#deadline.laptop {
+  min-width: 33% !important;
+}
+// =========================
+// Bollini dinamici
+// =========================
+@mixin bollino-base {
+  position: absolute;
+  top: $spacer;
+  right: $spacer;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  display: inline-block;
+  border-radius: 100vw;
+  padding: $spacer / 3 $spacer;
+  max-width: fit-content;
+  min-width: 0;
+  z-index: 99;
+}
+span.bollino_update {
+  @include bollino-base;
+  color: $color-black !important;
+  background-color: $color-yellow !important;
+  animation: updated 1s infinite alternate;
+  transform: rotate(5deg);
+}
+span.bollino_iscriviti {
+  @include bollino-base;
+  color: $color-black !important;
+  background-color: $color-theme;
+  animation: iscriviti 1s infinite alternate;
+}
+span.bollino_manca_poco {
+  @include bollino-base;
+  color: $color-black !important;
+  background-color: $color-yellow;
+  animation: manca_poco 1s infinite alternate;
+}
+span.bollino_chiuse {
+  @include bollino-base;
+  color: $color-white !important;
+  background-color: $color-purple;
+}
+// =========================
+// Keyframes Animazioni
+// =========================
+@keyframes manca_poco {
+  0% {
+    outline: 2px solid $color-white;
+    border: 2px solid $color-yellow;
+    transform: scale(0.95) rotate(-15deg);
+  }
+  100% {
+    border: 2px solid $color-white;
+    outline: 2px solid $color-yellow;
+    transform: scale(1.05) rotate(15deg);
+  }
+}
+@keyframes iscriviti {
+  0% {
+    outline: 2px solid $color-white;
+    border: 2px solid $color-theme;
+    transform: scale(0.95);
+  }
+  100% {
+    border: 2px solid $color-white;
+    outline: 2px solid $color-theme;
+    transform: scale(1.05);
+  }
+}
+@keyframes updated {
+  0% {
+    outline: 2px solid $color-white;
+    border: 2px solid $color-yellow;
+  }
+  100% {
+    border: 2px solid $color-white;
+    outline: 2px solid $color-yellow;
+    transform: rotate(-5deg);
+  }
+}
+// =========================
+// Responsive .location
+// =========================
+.location {
+  @include media-breakpoint-down(sm) {
+    min-width: 100%;
+    border-left: none !important;
+    border-right: none !important;
+  }
+}
+/* COOKIE MODAL COMPONENT */

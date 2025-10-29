@@ -1,0 +1,11 @@
+@use "sass:map";
+
+$spacer-scale: (
+  xl: 15px,
+  base: 15px,
+  sm: 10px,
+) !default;
+
+$spacer-xl: map.get($spacer-scale, xl) !default;
+$spacer: map.get($spacer-scale, base) !default;
+$spacer-sm: map.get($spacer-scale, sm) !default;

@@ -1,0 +1,58 @@
+@use "sass:map";
+@use "responsive" as responsive-tools;
+@use "../settings/typography" as typography-settings;
+
+@function type-scale($name) {
+  @return map.get(typography-settings.$typography-scales, $name);
+}
+
+@mixin apply-type-values($values) {
+  $size: map.get($values, size, null);
+  $line-height: map.get($values, line-height, null);
+  $width-variation: map.get($values, variation-width, null);
+
+  @if $size != null {
+    font-size: $size;
+  }
+
+  @if $line-height != null {
+    line-height: $line-height;
+  }
+
+  @if $width-variation != null {
+    font-variation-settings: "wdth" $width-variation;
+  }
+}
+
+@mixin responsive-type($name, $scales: typography-settings.$typography-scales) {
+  $config: map.get($scales, $name);
+
+  @if $config == null {
+    @error "Unknown typography scale `#{$name}`.";
+  }
+
+  $base: map.get($config, base);
+  @include apply-type-values($base);
+
+  @each $breakpoint, $values in $config {
+    @if $breakpoint != base {
+      @if $breakpoint == sm {
+        @include responsive-tools.media-breakpoint-down($breakpoint) {
+          @include apply-type-values($values);
+        }
+      } @else {
+        @include responsive-tools.media-breakpoint-up($breakpoint) {
+          @include apply-type-values($values);
+        }
+      }
+    }
+  }
+}
+
+@mixin generate-type-placeholders($scales: typography-settings.$typography-scales) {
+  @each $name, $config in $scales {
+    %#{$name} {
+      @include responsive-type($name, $scales);
+    }
+  }
+}

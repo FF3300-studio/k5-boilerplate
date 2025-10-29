@@ -1,0 +1,95 @@
+@use "../settings" as *;
+@use "../tools/responsive" as *;
+@use "../base/typography";
+/* ANCHORS NAVIGATION */
+.anchors-navigation {
+  background: linear-gradient(to bottom, $color-filter-bar, $color-white);
+  padding: $spacer * 3;
+  padding-top: 0;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  @include media-breakpoint-up(xl) {
+    padding: $spacer-xl * 3;
+  }
+  @include media-breakpoint-down(sm) {
+    position: relative;
+    padding: $spacer-sm * 3;
+  }
+}
+.single-anchor {
+  min-width: fit-content;
+  margin: 0 $spacer * 3;
+  @include media-breakpoint-down(sm) {
+    margin: 0 $spacer-sm * 3;
+  }
+  // Il secondo breakpoint 'down(sm)' con $spacer-xl sembra un errore: lo rimuovo
+  * {
+    min-width: fit-content;
+    margin-bottom: 0;
+    @extend %medium;
+  }
+  a {
+    min-width: fit-content;
+    color: $color-black;
+    margin: 0;
+    margin-left: $spacer / 2;
+    &:hover {
+      color: $color-hover;
+    }
+  }
+}
+.anchor-block {
+  padding: $spacer $spacer * 3;
+  margin: $spacer * 2 0;
+  @include media-breakpoint-up(xl) {
+    padding: $spacer $spacer-xl * 3;
+    margin: $spacer-xl * 2 0;
+  }
+  @include media-breakpoint-down(sm) {
+    padding: $spacer $spacer-sm * 3;
+    margin: $spacer-sm * 2 0;
+  }
+  .anchor-block-inner {
+    background-color: $color-black;
+    padding: $spacer / 2;
+    @include media-breakpoint-up(xl) {
+      padding: $spacer-xl / 2;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: $spacer-sm / 2;
+    }
+    p {
+      color: $color-white;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 0;
+      @extend %extrasmall;
+    }
+  }
+}
+.anchor-row {
+  padding-left: 25%;
+  padding-right: $spacer * 3;
+  @include media-breakpoint-up(xl) {
+    padding-right: $spacer-xl * 3;
+  }
+  @include media-breakpoint-down(sm) {
+    padding-left: $spacer-sm * 3;
+    padding-right: $spacer-sm * 3;
+  }
+  .blocks {
+    p {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .block-image-text {
+      padding: 0;
+    }
+  }
+}
+/* FOOTER */

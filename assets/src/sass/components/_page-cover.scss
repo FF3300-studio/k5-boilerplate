@@ -1,0 +1,49 @@
+@use "../settings" as *;
+@use "../tools/responsive" as *;
+@use "../base/typography";
+/* COMPONENTE: PAGE COVER */
+/* CSS relativo al componente che stampa le copertine delle pagine */
+.cover-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin-bottom: $spacer * 2;
+  @include media-breakpoint-down(sm) {
+    flex-direction: column!important;
+  }
+  .cover-first-element {
+    width: 40%;
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+      img {
+        max-height: 50vh;
+        min-width: 100vw;
+      }
+    }
+    img {
+      padding-right: $spacer * 2;
+      @include media-breakpoint-down(sm) {
+        padding-right: 0;
+      }
+    }
+  }
+  .page-informations {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    p {
+      width: fit-content;
+      margin: 0;
+    }
+  }
+}
+/* ANCHORS NAVIGATION */
