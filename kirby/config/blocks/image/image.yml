@@ -59,3 +59,23 @@ fields:
     label: field.blocks.image.crop
     type: toggle
     width: 1/2
+  min_height:
+    label: Min Height (px, vh, vw, etc.)
+    type: text
+    default: "unset"
+    width: 1/2
+  min_width:
+    label: Min Width (px, vh, vw, etc.)
+    type: text
+    default: "unset"
+    width: 1/2
+  max_height:
+    label: Max Height (px, vh, vw, etc.)
+    type: text
+    default: "unset"
+    width: 1/2
+  max_width:
+    label: Max Width (px, vh, vw, etc.)
+    type: text
+    default: "unset"
+    width: 1/2
