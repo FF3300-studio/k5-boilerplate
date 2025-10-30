@@ -1,55 +1,26 @@
 <?php
 
-namespace microman;
+namespace Plain\Formblock;
 
 /**
  * @package   Kirby Form Block Suite
- * @author    Roman Gsponer <kirby@microman.ch>
- * @link      https://microman.ch/
+ * @author    Roman Gsponer <support@plain-solutions.net>
+ * @link      https://plain-solutions.net/
  * @copyright Roman Gsponer
- * @license   https://license.microman.ch/license/ 
+ * @license   https://plain-solutions.net/terms/ 
  */
 
 use Kirby\Filesystem\Dir;
 use Kirby\Filesystem\F;
-use Kirby\Toolkit\Str;
 use Kirby\Data\Yaml;
 
-class FormBlueprint
+class Blueprint
 {
-
-        /**
-     * Get form tab
-     * 
-     * @return array
-     **/
-    /*
-    public static function getBlock(): array
-    {
-        return [
-            'name' => 'form.block.fromfields',
-            'icon' => 'form',
-            'fields' => [
-                'id' => [
-                    'type' => 'select',
-                    'default' => [
-                        'id' => ''
-                    ],
-                    'options' => [
-                        'type'  => 'query',
-                        'query' => 'site.drafts',
-                        'text'  => '{{page.name}}'
-                    ]
-                ]                
-            ]
-        ];
-    }
-    */
 
     /**
      * Get Blueprint as array
      * 
-     * @param Array $path Filename or path of Bluepring
+     * @param Array $path Filename or path of Blueprint
      * 
      * @return array
      */
@@ -79,12 +50,10 @@ class FormBlueprint
         };
 
         return [
-            'label' => 'Inbox',
+            'label' => 'form.block.inbox',
             'fields' => [
                 'formid' => ['type' => 'hidden'],
                 'mailview' => [
-                    //You can find the license validation in the file: lib/FormLicense.php
-                    "license" => !FormLicense::checkLicense(),
                     'type' => 'mailview'
                 ]
             ]
@@ -99,7 +68,7 @@ class FormBlueprint
     public static function getForm(): array
     {
         return [
-            'label' => 'Formfields',
+            'label' => 'form.block.fromfields',
             'fields' => static::getFormfields()
         ];
     }
@@ -112,7 +81,7 @@ class FormBlueprint
     public static function getOptions(): array
     {
         return [
-            'label' => 'Options',
+            'label' => 'form.block.options',
             'fields' => static::mergeField(
                 [
                     'name' => [
@@ -120,8 +89,8 @@ class FormBlueprint
                     ],
                     'info' => static::getInfoText()
                 ],
-                (static::isEnabled('notify')) ?  Yaml::read(__DIR__ . "/../blueprints/snippets/form_notify.yml") : [],
-                (static::isEnabled('confirm')) ?  Yaml::read(__DIR__ . "/../blueprints/snippets/form_confirm.yml") : [],
+                (static::isEnabled('notify')) ? static::getBlueprint('snippets/form_notify') : [],
+                (static::isEnabled('confirm')) ? static::getBlueprint('snippets/form_confirm') : [],
                 static::getBlueprint('snippets/form_options')
             )
         ];
@@ -172,7 +141,7 @@ class FormBlueprint
             ],
             'display'       => [
                 'type' => 'text',
-                'label' => 'Formfields display',
+                'label' => 'form.block.fromfields.display',
                 'help' => 'form.block.fromfields.display.help'
             ]
         ];
@@ -221,7 +190,7 @@ class FormBlueprint
             return false;
         };
 
-        $text = '**With *\{\{  \}\}* you can insert incoming values using placeholder.**';
+        $text = '** With &#123;&#123; &#125;&#125; you can insert incoming values using placeholder.**';
         foreach (static::getPlaceholders() as $key => $value) {
             $text .= "\n**\{\{ $key \}\}**: ".$value['label'];
         }
@@ -253,7 +222,7 @@ class FormBlueprint
                     return $table;
                 }
             ]
-        ], kirby()->option('microman.formblock.placeholders') ?? []);
+        ], kirby()->option('plain.formblock.placeholders') ?? []);
     }
 
     /**
@@ -265,7 +234,8 @@ class FormBlueprint
      */
     private static function isEnabled($fnc): bool
     {
-        return empty(kirby()->option("microman.formblock.disable_$fnc"));
+        $option_value = ".formblock.disable_$fnc";
+        return empty(kirby()->option("plain.$option_value"));
     }
 
 }

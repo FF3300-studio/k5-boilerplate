@@ -14,7 +14,7 @@
                 <?= $formfield->required('attr') ?>
                 <?= $formfield->ariaAttr() ?>
             >
-            <?= $option->label()->kirbytext() ?>
+            <?= $option->label() ?>
             <span class="formfield__radio__check"></span>
         </label>
     </div>

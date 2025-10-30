@@ -32,7 +32,7 @@
             'success_message'   => $form->template('form_success', [], !$form->isSuccess()),
             'redirect'          => ($form->redirect()->isTrue() && $form->isSuccess()) ? $form->success_url()->toPage()->url() : "",
             'fields'            => $fields
-        ]); 
+        ]);
 
     ?>
     <!--[Endvalidation]-->    

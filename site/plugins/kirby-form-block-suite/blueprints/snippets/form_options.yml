@@ -8,7 +8,7 @@ redirect:
 
 success_message:
   label: form.block.options.success_text
-  type: textarea
+  type: writer
   help: form.block.default.help
   width: 2/3
   when:

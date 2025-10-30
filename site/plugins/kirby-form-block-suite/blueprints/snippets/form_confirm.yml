@@ -1,29 +1,28 @@
 enable_confirm:
   type: toggle
-  label: Enable confirm
+  label: form.block.options.enable_confirm
 
 confirm_email:
-  label: Confirm e-mail
+  label: form.block.options.confirm_email
   type: text
-  pattern: ^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$
-  help: 
+  help: form.block.options.email.help
   width: 1/2
   when:
     enable_confirm: true
 
 confirm_subject:
-  label: Confirm subject
+  label: form.block.options.confirm_subject
   type: text
-  help:
+  help: form.block.default.help
   width: 1/2
   when:
     enable_confirm: true
 
 confirm_body:
-  label: Confirm body
+  label: form.block.options.confirm_body
   type: textarea
-  help: "Inserisci il messaggio di conferma. Puoi usare Markdown."
-  buttons: true
+  help: form.block.default.help
+  buttons: false
   when:
     enable_confirm: true
 

@@ -1,11 +1,11 @@
 
 label:
-  label: Label
+  label: form.block.fromfields.label
   type: text
   width: 1/2
 
 slug:
-  label: Slug
+  label: form.block.fromfields.slug
   type: slug
   required: true
   wizard:
@@ -14,7 +14,7 @@ slug:
   width: 1/2
 
 autofill:
-  label: Autofill
+  label: form.block.fromfields.autofill
   type: select
   options:
     name:
@@ -92,13 +92,13 @@ autofill:
   width: 1/2
 
 required:
-  label: Required
+  label: form.block.fromfields.required
   type: toggle
   width: 1/2
 
 required_fail:
-  label: Required fail
+  label: form.block.fromfields.required_fail
   type: text
-  help: 
+  help: form.block.default.help
   when:
     required: true

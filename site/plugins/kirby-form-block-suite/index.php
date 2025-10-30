@@ -1,98 +1,12 @@
 <?php
 
-load([
-    'microman\\FormBlueprint' => '/classes/FormBlueprint.php',
-    'microman\\Form' => '/classes/Form.php',
-    'microman\\FormRequest' => '/classes/FormRequest.php',
-    'microman\\FormFields' => '/classes/FormFields.php',
-    'microman\\FormField' => '/classes/FormField.php',
-    'microman\\FormLicense' => '/classes/FormLicense.php',
-], __DIR__);
+@include_once __DIR__ . '/utils/load.php';
 
-use microman\Form;
-use microman\FormLicense;
-use microman\FormRequest;
-use microman\FormBlueprint;
-use Kirby\Cms\App as Kirby;
-use Kirby\Filesystem\Dir as Dir;
+use Plain\Helpers\Plugin;
+use Kirby\Exception\Exception;
 
-Kirby::plugin('microman/formblock', [
-    'options' => [ 
-        'from_email' => 'no-reply@' . Kirby::instance()->environment()->host(),
-        'placeholders' => FormBlueprint::getPlaceholders(),
-        'honeypot_variants' => ["email", "name", "url", "tel", "given-name", "family-name", "street-address", "postal-code", "address-line2", "address-line1", "country-name", "language", "bday"],
-        'default_language' => 'it',
-        'disable_confirm' => false,
-        'disable_notify' => false,
-        'disable_html' => false,
-        'dynamic_validation' => true
-    ],
-    'templates' => [ 'formcontainer' => __DIR__ . "/templates/formcontainer.php" ],
-    'blueprints' => [
-        'blocks/form' => [
-            'name' => 'Block name',
-            'icon' => 'email',
-            'tabs' => [
-                'inbox' => FormBlueprint::getInbox(),
-                'form' => FormBlueprint::getForm(),
-                'options' => FormBlueprint::getOptions()
-            ]
-        ],
-        'pages/formrequest' => FormBlueprint::getBlueprint('pages/formrequest'),
-        'pages/formcontainer' => FormBlueprint::getBlueprint('pages/formcontainer'),
-    ],
-    'snippets' => Form::snippets(__DIR__),
-    'fields' => [
-        'mailview' => [
-            'props' => [
-                'parent' => function () {
-                    return false;
-                },
-            ]
-        ],
-    ],
-    'blockModels' => [
-        'form' => Form::class
-    ],
-    'routes' => [
-        [
-            'pattern' => 'form/validator',
-            'method' => "POST",
-            'action'  => function () {
+if (option('microman.formblock.from_email')) {
+    throw new Exception('Deprecation error: Option prefix microman.formblock changed to plain.formblock in config.php');
+};
 
-                //Get Page
-                if ((get('page') ?? "site") === 'site') {
-                    $page = site();
-                } else {
-                    $page = site()->index(true)->find(get('page'));
-                }
-                site()->visit($page, get('lang'));
-                $rendered_page = page()->render();
-                preg_match('/\<\!--\[Startvalidation:' . get('id') . '\]--\>(.*?)\<\!--\[Endvalidation\]--\>/s', $rendered_page, $out);
-                return end($out);
-                    
-                
-            }
-        ]
-    ],
-    'api' => [
-        'routes' => [
-            [
-                'pattern' => 'formblock',
-                'action' => function() {
-                    $formRequest = new FormRequest($this->requestQuery());
-                    return $formRequest->api($this->requestQuery());
-                }
-            ],
-            [
-                "pattern" => "formblock/license",
-                "action" => function () {
-                    return FormLicense::register(get("key"), get("email"));
-                },
-            ],
-        ]
-    ],
-    'translations' => [
-	    'it' => require __DIR__ . '/lib/languages/it.php'
-    ]
-]);
+Plugin::load('plain/formblock', autoloader: true);

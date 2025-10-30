@@ -2,7 +2,7 @@
     "content": {
         "formfields": [{
                 "content": {
-                    "label": "Name",
+                    "label": "Nom",
                     "slug": "name",
                     "autofill": "name",
                     "required": true,
@@ -26,7 +26,7 @@
                 "type": "formfields_01_input"
             }
         ],
-        "name": "Form block",
+        "name": "Formulaire",
         "enable_notify": false,
         "enable_confirm": false,
         "redirect": false,

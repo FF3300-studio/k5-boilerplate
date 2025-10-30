@@ -1,28 +1,25 @@
 <?php
 
-namespace microman;
+namespace Plain\Formblock;
 
 /**
  * @package   Kirby Form Block Suite
- * @author    Roman Gsponer <kirby@microman.ch>
- * @link      https://microman.ch/
+ * @author    Roman Gsponer <support@plain-solutions.net>
+ * @link      https://plain-solutions.net/
  * @copyright Roman Gsponer
- * @license   https://license.microman.ch/license/ 
+ * @license   https://plain-solutions.net/terms/ 
  */
 
-use Kirby\Cms\Block;
-use Kirby\Cms\Structure;
+use Kirby\Cms\Block as KirbyBlock;
+use Kirby\Filesystem\F;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\V;
-use Kirby\Toolkit\F;
 use Kirby\Toolkit\Str;
-use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\Escape;
 use Kirby\Http\Request\Files;
 use Kirby\Filesystem\Mime;
-use microman\Form;
 
-class FormField extends Block
+class Field extends KirbyBlock
 {
 
     /**
@@ -36,7 +33,7 @@ class FormField extends Block
     /**
      * Visitor send some values
      *
-     * @var Bool
+     * @var Array
      */
     protected $errors;
 
@@ -46,6 +43,7 @@ class FormField extends Block
      * @var Array
      */
     protected $files;
+
 
     /**
      * Creates a field
@@ -85,10 +83,11 @@ class FormField extends Block
      * 
      * @return array|string
      */
-    private function request($slug = NULL)
+    private function request($slug = null)
     {
-        if (is_null($slug))
+        if (is_null($slug)) {
             return get();
+        }
 
         return get(is_string($slug) ? $slug : $slug->toString()) ?: "";
     }
@@ -155,7 +154,13 @@ class FormField extends Block
 
         
         if (!is_null($this->files)) {
-            return implode(', ', array_map(fn($f) => f::safeName($f['name']), $this->files));
+            return implode(', ', array_map(fn($f) => F::safeName($f['name']), $this->files));
+        }
+
+        // Prefill value from query string variable matching slug
+        $slug = (string) $this->content()->slug();
+        if(isset($_GET[$slug]) && ($value = $_GET[$slug])){
+            return Escape::html($value);
         }
 
         return $raw ? $this->content()->value() : Escape::html($this->content()->value());
@@ -272,7 +277,7 @@ class FormField extends Block
      * Get Selected options as Array or by $prop
      * 
      * @param array $prop
-     * @return array|NULL
+     * @return array|null
      */
     public function selectedOptions($prop = 'label')
     {
@@ -331,16 +336,35 @@ class FormField extends Block
         if (!is_null($this->files) )
             return $this->validateFile();
 
+
+
+        if ($this->required() && empty($this->value())) {
+
+            return ['required' => $this->message('required_fail')];
+
+        } 
+
         //Validate Requirement
         $validator = $this->validate()->toStructure()->toArray();
 
-        if ($this->required()) 
-            array_push($validator, ['validate' => 'different', 'different' => '', 'msg' => $this->message('required_fail')]);
+        //Validate spam protection
+        if ($this->type(true) === "captcha" ) {
+
+            $calc = array_sum(explode('_', get('captcha-id')));
+
+            array_push($validator, [
+                'validate' => 'same',
+                'same' => strval($calc),
+                'msg' => $this->fail()->or($this->message('captcha_fail'))
+            ]);
+
+        }
+
 
         foreach ($validator as $v) {
             $rule = Str::lower($v['validate']);
             $rules[$rule] = [isset($v[$rule]) ? $v[$rule] : "" ];
-            $messages[$rule] = $v['msg'] ?? NULL;
+            $messages[$rule] = empty($v['msg']) ? t('error.validation.' . $v['validate']) : $v['msg'];
         }
 
         $errors = V::errors($this->value(), $rules, $messages);
@@ -349,7 +373,8 @@ class FormField extends Block
             'type'          => $this->type(true),
             'value'         => $this->value(),
             'errors'        => $errors,
-            'field'         => $this
+            'field'         => $this,
+            'slug'          => $this->slug()
 
         ], 'errors');
 
@@ -427,7 +452,7 @@ class FormField extends Block
      */
     public function isValid(): bool
     {
-        return count($this->errors) == 0;
+        return count($this->errors) === 0;
     }
 
     /**

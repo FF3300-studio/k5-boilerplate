@@ -1,26 +1,24 @@
 <?php
 
-namespace microman;
+namespace Plain\Formblock;
 
 /**
  * @package   Kirby Form Block Suite
- * @author    Roman Gsponer <kirby@microman.ch>
- * @link      https://microman.ch/
+ * @author    Roman Gsponer <support@plain-solutions.net>
+ * @link      https://plain-solutions.net/
  * @copyright Roman Gsponer
- * @license   https://license.microman.ch/license/ 
+ * @license   https://plain-solutions.net/terms/ 
  */
 
-use Kirby\Cms\Page;
-use Kirby\Cms\Site;
-use Kirby\Cms\Template;
+use Kirby\Cms\App;
 use Kirby\Toolkit\I18n;
-use Kirby\Toolkit\F;
-use Kirby\Uuid\Uuid;
 use Kirby\Http\Request\Files;
+use Kirby\Filesystem\F;
+use Kirby\Toolkit\A;
+use Kirby\Toolkit\Str;
+use Kirby\Uuid\Uuid;
 
-use Kirby\Exception\Exception;
-
-class FormRequest
+class Request
 {
 
 
@@ -108,7 +106,9 @@ class FormRequest
 
         site()->kirby()->impersonate('kirby');
 
-        $this->container = $this->page->createChild([
+        $this->container = $this->page->childrenAndDrafts()->findBy('slug', $props['form_id']);
+
+        $this->container ??= $this->page->createChild([
             'slug' => $props['form_id'],
             'template' => 'formcontainer',
             'content' => [ 
@@ -218,7 +218,7 @@ class FormRequest
             site()->kirby()->impersonate('kirby');
             $this->request->delete();
 
-            if($this->container->empty()) {
+            if($this->container->hasDrafts() === false) {
                 $this->container->delete();
             }
             
@@ -344,11 +344,51 @@ class FormRequest
                     "fail" => $this->infoPart('fail', $container),
                     "state" => $this->infoPart('state', $container),
                     "theme" => $this->infoPart('theme', $container),
-                    "text" => $this->infoPart('text', $container),
+                    "text" => $this->infoPart('text', $container)
                 ];
         }
                     
         
+    }
+
+    private function downloadLink($form_id, $title) {
+
+        $encodedPageId = str_replace('/', '__DS__', $this->page_id);
+
+        return A::join([
+            kirby()->url(),
+            'form',
+            'download',
+            csrf(),
+            $encodedPageId,
+            $form_id,
+            Str::slug($title)
+        ], '/') . '.csv';
+    }
+
+    public function download()
+    {
+
+        $output = null;
+
+        function parseField($field) {
+            $array = json_decode($field->value(), true);
+            unset($array['summary']);
+            return array_values($array);
+        }
+
+        foreach ($this->container->drafts()->sortBy('received', 'desc') as $b) {
+
+            $content = $b->content();
+            $received = $content->received()->toValue();
+            $id = $content->slug();
+
+            $output ??= A::join(['ID', ...parseField($content->formfields()), 'Received'], ';') . "\n";
+            $output .= A::join([$id, ...parseField($content->formdata()), $received], ';') . "\n";
+            
+        }
+        
+        return $output;
     }
 
     /**
@@ -373,13 +413,14 @@ class FormRequest
                 continue;
             }
 
-            foreach ($a->drafts()->sortBy('received', 'desc')->sortBy('read', 'asc') as $b) {
+            foreach ($a->drafts()->sortBy('received', 'desc') as $b) {
                 if ($b->read())
                     $read ++;
                 array_push($content, array_merge($b->content()->toArray(), $b->toArray()));
             }
 
             $pagetitle = ($a->parent()) ? $a->parent()->title()->value() : site()->title()->value();
+            $formtitle = $pagetitle . " - " .  $a->name()->value();
 
             $out[$a->slug()] = [
                 "content" => $content,
@@ -388,8 +429,9 @@ class FormRequest
                 "uuid" => $a->content()->uuid()->value(),
                 "header" => [
                     "page" => $pagetitle,
-                    "name" => $pagetitle . " - " .  $a->name()->value(),
-                    "state" => $this->infoPart('array', $a)
+                    "name" => $formtitle,
+                    "state" => $this->infoPart('array', $a),
+                    "download" => $this->downloadLink($a->slug(), $formtitle)
                 ]
             ] ;
             

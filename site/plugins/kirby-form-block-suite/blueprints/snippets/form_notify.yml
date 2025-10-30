@@ -1,18 +1,18 @@
 enable_notify:
   type: toggle
-  label: Enable notify
+  label: form.block.options.enable_notify
 
 notify_email:
-  label: Notify e-mail
+  label: form.block.options.notify_email
   type: text
-  pattern: ^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$
+  placeholder: form.block.options.notify_placeholder
   help: form.block.options.email.help
   width: 1/2
   when:
     enable_notify: true
 
 notify_subject:
-  label: Notify subject
+  label: form.block.options.notify_subject
   type: text
   help: form.block.default.help
   width: 1/2
@@ -20,7 +20,7 @@ notify_subject:
     enable_notify: true
     
 notify_body:
-  label: Notify body
+  label: form.block.options.notify_body
   type: textarea
   help: form.block.default.help
   buttons: false

@@ -4,11 +4,9 @@
 # npm modules
 /node_modules
 
-# Composer files
-/vendor
+#Symbolic Links
+*.lnk
+*.symlink
 
 # migration file
 /migrated
-
-# source
-/src

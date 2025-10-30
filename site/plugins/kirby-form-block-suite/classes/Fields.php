@@ -1,20 +1,19 @@
 <?php
 
-namespace microman;
+namespace Plain\Formblock;
 
 /**
  * @package   Kirby Form Block Suite
- * @author    Roman Gsponer <kirby@microman.ch>
- * @link      https://microman.ch/
+ * @author    Roman Gsponer <support@plain-solutions.net>
+ * @link      https://plain-solutions.net/
  * @copyright Roman Gsponer
- * @license   https://license.microman.ch/license/ 
+ * @license   https://plain-solutions.net/terms/ 
  */
 
-use Kirby\Cms\Blocks;
+use Kirby\Cms\Blocks as KirbyBlock;
 use Kirby\Http\Environment;
-use Kirby\Filesystem\F;
 
-class FormFields extends Blocks
+class Fields extends KirbyBlock
 {
 
     /**
@@ -52,7 +51,7 @@ class FormFields extends Blocks
         foreach ($params as $formfield) {
 
             $this->add(
-                new FormField(
+                new Field(
                     [
                         "content" => $formfield['content'],
                         'id' => $formfield['id'],
@@ -85,7 +84,7 @@ class FormFields extends Blocks
         if ($field = $this->findBy('slug', str_replace('_', '-', $key)))
             return $field;
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -113,7 +112,7 @@ class FormFields extends Blocks
      * @param string $attr What value to return
      * @return string|array
      */
-    public function errorFields($attr = NULL)
+    public function errorFields($attr = null)
     {
         $errors = [];
 
@@ -157,7 +156,7 @@ class FormFields extends Blocks
     public function checkHoneypot($hpId): bool
     {
         
-        if ((get($hpId) === NULL || get($hpId) !== "") && $this->isFilled()) {
+        if ((get($hpId) === null || get($hpId) !== "") && $this->isFilled()) {
             $this->isFilled = false;
             return false;
         };
