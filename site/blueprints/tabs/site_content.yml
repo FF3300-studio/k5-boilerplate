@@ -16,14 +16,9 @@ columns:
       general_listed:
         headline: Pubblicate 
         type: pages
-        layout: cards
-        size: medium
+        image: false
         query: site.children.listed.filterBy('collection_toggle', '!=', 'true')
         status: listed
-        image:
-          cover: true
-          ratio: 16/9
-          
 
   - width: 1/4
     sections:
@@ -32,20 +27,14 @@ columns:
         headline: Bozze 
         type: pages
         status: draft
-        layout: list
-        image:
-          cover: true
-          ratio: 3/1
+        image: false
           
 
       general_unlisted:
         headline: Non indicizzate 
         type: pages
         status: unlisted
-        layout: list
-        image:
-          cover: true
-          ratio: 3/1
+        image: false
           
 
   - width: 1/1
@@ -84,9 +73,7 @@ columns:
         type: pages
         query: site.index.listed.filterBy('collection_toggle','true')
         status: listed
-        image:
-          cover: true
-          ratio: 16/9
+        image: false
           
 
 
