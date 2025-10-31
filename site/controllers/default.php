@@ -87,9 +87,9 @@ function getLocationsArray($collection, $categories, $defaultMarker, $activeCate
 // Calcola dati utili per la gestione di un form (es. iscrizioni, percentuale, posti disponibili)
 function getFormData($formPage, $site) {
     // Trova tutte le risposte al form collegate alla pagina
-    $responses = $site->index(true)->filter(fn($p) =>
+    $responses = $formPage->index(true)->filter(fn($p) =>
         $p->intendedTemplate()->name() === 'formrequest' &&
-        Str::startsWith($p->id(), $formPage->id())
+        ($p->isDescendantOf($formPage) || Str::startsWith($p->id(), $formPage->id()))
     );
 
     // Filtra solo quelle che sono state lette

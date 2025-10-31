@@ -3,9 +3,9 @@
 <?php
 use Kirby\Toolkit\Str;
 
-$responses = $site->index(true)->filter(function ($p) use ($page) {
+$responses = $page->index(true)->filter(function ($p) use ($page) {
     return $p->intendedTemplate()->name() === 'formrequest'
-        && Str::startsWith($p->id(), $page->id());
+        && ($p->isDescendantOf($page) || Str::startsWith($p->id(), $page->id()));
 });
 
 echo "Risposte trovate: " . $responses->count();
