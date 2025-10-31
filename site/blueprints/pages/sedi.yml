@@ -1,0 +1,43 @@
+# site/blueprints/pages/sedi.yml (estratto)
+fields:
+  # Google Sheet
+  gsheet_url:
+    label: Google Sheet – URL export CSV (opzionale)
+    type: url
+    when:
+      data_source: gsheet
+
+  gsheet_id:
+    label: Google Sheet ID
+    type: text
+    width: 1/4
+
+  gsheet_gid:
+    label: GID della tab
+    type: text
+    width: 1/4
+    default: "0"
+
+  # Cache
+  cache_ttl_minutes:
+    label: Cache (minuti)
+    type: number
+    width: 1/4
+    min: 1
+    step: 1
+    default: 10
+    help: Per ridurre i tempi di caricamento
+
+  # Mappa
+  mapbox_show_controls:
+    label: Mostra controlli zoom
+    type: toggle
+    default: true
+    width: 1/4
+
+  mapbox_style_url:
+    label: Mapbox Style URL
+    type: text
+    width: 1/1
+    help: Es. mapbox://styles/tuoutente/tuostile
+

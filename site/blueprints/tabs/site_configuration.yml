@@ -109,5 +109,23 @@ sections:
       #
       footer: fields/footer_layout
   
-
-        
+  #
+  # Qua ci va il footer…
+  section_marker:
+    headline: Marker 
+    type: fields
+    fields:
+      #
+      separator_4:
+        type: line
+      #
+      marker_headline:
+        type: headline
+        label: Marker
+        width: 1/1
+      #
+      marker:
+        label: Svg del marker per le mappe
+        type: files
+        width: 1/1
+        max: 1
