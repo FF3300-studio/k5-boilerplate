@@ -41,3 +41,8 @@ fields:
     width: 1/1
     help: Es. mapbox://styles/tuoutente/tuostile
 
+  marker:
+    label: Svg del marker per la mappa
+    type: files
+    width: 1/1
+    max: 1

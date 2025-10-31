@@ -5,10 +5,10 @@
 <?php
 // Marker: file scelto nel Panel, altrimenti fallback in assets
 $markerUrl = null;
-if ($site->marker()->isNotEmpty() && ($f = $site->marker()->toFile())) {
+if ($page->marker()->isNotEmpty() && ($f = $page->marker()->toFile())) {
   $markerUrl = $f->url();
 } else {
-  $markerUrl = url('assets/img/marker-default.png'); // prepara questo file
+  $markerUrl = url('assets/fallback/marker-default.png'); // prepara questo file
 }
 
 // TTL minuti dal blueprint (cache_ttl_minutes)
