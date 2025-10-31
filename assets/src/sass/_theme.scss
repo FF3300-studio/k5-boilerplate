@@ -2090,7 +2090,7 @@ hr {
 }
 // Mapbox popup
 .mapboxgl-popup {
-  margin-top: -60px;
+  margin-top: 0px;
   padding: $spacer / 2;
   @include media-breakpoint-up(xl) {
     padding: $spacer-xl / 2;
@@ -2102,7 +2102,7 @@ hr {
     margin: 0;
     padding: $spacer / 2;
     background: $color-primary;
-    border-radius: 100vw;
+    border-radius: $spacer;
     @include media-breakpoint-up(xl) {
       padding: $spacer-xl / 2;
     }

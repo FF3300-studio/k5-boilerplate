@@ -1,9 +1,6 @@
 <?php
 // site/templates/sedi.json.php
-// Restituisce un FeatureCollection GeoJSON con cache HTTP forte
-
-// Il controller 'sedi.php' prepara già $mapData['features'].
-// Se arrivi qui senza controller, calcola un fallback minimo.
+// FeatureCollection GeoJSON con cache HTTP parametrizzata dal blueprint
 
 $features = $mapData['features'] ?? [];
 
@@ -14,10 +11,14 @@ $geo = [
 
 $json = json_encode($geo, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-// ETag per evitare trasferimenti inutili
+// TTL da blueprint (min 60s)
+$ttlMinutes = (int)$page->cache_ttl_minutes()->or(10)->value();
+$ttlSeconds = max(60, $ttlMinutes * 60);
+
+// ETag + Cache-Control coerenti col TTL
 $etag = '"' . md5($json) . '"';
 header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: public, max-age=300, stale-while-revalidate=60');
+header('Cache-Control: public, max-age=' . $ttlSeconds . ', stale-while-revalidate=' . (int)min($ttlSeconds, 120));
 header('ETag: ' . $etag);
 
 // 304 Not Modified se coincide
