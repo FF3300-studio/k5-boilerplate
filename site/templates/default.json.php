@@ -14,9 +14,9 @@ function serializePage($page, $site) {
     $max = $page->num_max()->isNotEmpty() ? (int)$page->num_max()->value() : null;
 
     // Conta le risposte al form
-    $responses = $site->index(true)->filter(function ($p) use ($page) {
+    $responses = $page->index(true)->filter(function ($p) use ($page) {
         return $p->intendedTemplate()->name() === 'formrequest'
-            && Str::startsWith($p->id(), $page->id());
+            && ($p->isDescendantOf($page) || Str::startsWith($p->id(), $page->id()));
     });
 
     // Conta solo risposte già lette
