@@ -8,9 +8,39 @@ use Kirby\Uuid\Uuid;
 
 class SediPage extends Page
 {
-    /** =========================
-     *  Intestazioni -> chiavi normalizzate
-     *  ========================= */
+    /* ---------------------------------------
+       Rilevamento contesto: Panel vs Frontend
+    --------------------------------------- */
+    protected function isPanelRequest(): bool
+    {
+        // 1) path richiesto
+        $path = $this->kirby()->path();
+        if (is_string($path) && ($path === 'panel' || Str::startsWith($path, 'panel/') || Str::contains($path, '/panel/'))) {
+            return true;
+        }
+
+        // 2) referer che proviene dal panel
+        $ref = $_SERVER['HTTP_REFERER'] ?? '';
+        if (is_string($ref) && Str::contains($ref, '/panel')) {
+            return true;
+        }
+
+        // 3) richieste XHR tipiche del panel
+        $xhr = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+        if (is_string($xhr) && strtolower($xhr) === 'xmlhttprequest') {
+            // se l’URL richiesto o il referer includono "panel", assumiamo contesto Panel
+            if ((is_string($path) && Str::contains($path, 'panel')) || (is_string($ref) && Str::contains($ref, '/panel'))) {
+                return true;
+            }
+        }
+
+        return false;
+        // Nota: niente userAgent; evitiamo metodi non disponibili in Kirby\Request
+    }
+
+    /* -------------------------------
+       Normalizzazione header CSV
+    ------------------------------- */
     protected function normalizeHeader(string $h): string
     {
         $h = Str::lower(Str::slug($h, ' '));
@@ -20,6 +50,8 @@ class SediPage extends Page
             'nome'                   => 'nome',
             'indirizzo della lega'   => 'indirizzo',
             'indirizzo'              => 'indirizzo',
+            'citta'                  => 'citta',
+            'città'                  => 'citta',
             'cap'                    => 'cap',
             'lat'                    => 'lat',
             'latitudine'             => 'lat',
@@ -38,41 +70,70 @@ class SediPage extends Page
         return $map[$h] ?? $h;
     }
 
-    protected function parseCsvString(string $csv, string $separator = ','): array
+    protected function stripBom(string $s): string
     {
-        $rows = [];
+        return (substr($s, 0, 3) === "\xEF\xBB\xBF") ? substr($s, 3) : $s;
+    }
+
+    protected function detectSeparator(string $csv): string
+    {
+        $firstLine = strtok($csv, "\r\n");
+        if ($firstLine === false) return ',';
+        $candidates = [",", ";", "\t"];
+        $max = -1; $best = ',';
+        foreach ($candidates as $sep) {
+            $cnt = substr_count($firstLine, $sep);
+            if ($cnt > $max) { $max = $cnt; $best = $sep; }
+        }
+        return $best ?: ',';
+    }
+
+    protected function parseCsvString(string $csv, ?string $separator = null): array
+    {
+        $csv = $this->stripBom($csv);
         $lines = preg_split('/\R/u', trim($csv));
         if (!$lines || count($lines) === 0) return [];
 
-        $headers = str_getcsv(array_shift($lines), $separator);
+        $sep = $separator ?? $this->detectSeparator($csv);
+        $headers = str_getcsv(array_shift($lines), $sep);
         $headers = array_map('trim', $headers);
         $headers = array_map(fn($h) => $this->normalizeHeader($h), $headers);
 
+        $rows = [];
         foreach ($lines as $line) {
             if (trim($line) === '') continue;
-            $cols = str_getcsv($line, $separator);
+            $cols = str_getcsv($line, $sep);
             if (count($cols) < count($headers)) $cols = array_pad($cols, count($headers), '');
             $row = [];
             foreach ($headers as $i => $h) {
-                $row[$h] = isset($cols[$i]) ? trim($cols[$i]) : '';
+                $val = $cols[$i] ?? '';
+                $row[$h] = is_string($val) ? trim($val) : $val;
             }
             $rows[] = $row;
         }
         return $rows;
     }
 
-    /** =========================
-     *  Cache TTL (minuti dal blueprint)
-     *  ========================= */
+    /* ---------------------------------------
+       Cache TTL: più generosa in Panel
+    --------------------------------------- */
     protected function cacheTtlSeconds(): int
     {
+        if ($this->isPanelRequest()) {
+            // Evitiamo hammering durante l’editing
+            return 300; // 5 minuti
+        }
+        if (option('debug') === true) {
+            // In dev: TTL breve ma non 1s per non martellare
+            return 60;
+        }
         $minutes = (int)$this->cache_ttl_minutes()->or(10)->value();
         return max(1, $minutes) * 60;
     }
 
-    /** =========================
-     *  Google Sheet -> righe (con cache Kirby)
-     *  ========================= */
+    /* ----------------------
+       Google Sheet → righe
+    ---------------------- */
     protected function rowsFromGoogleSheet(): array
     {
         $explicitUrl = trim((string)$this->gsheet_url());
@@ -88,9 +149,7 @@ class SediPage extends Page
         $cache = kirby()->cache('sedi');
         $key   = 'rows.gsheet.' . $this->id() . '.' . sha1($url);
 
-        if ($cached = $cache->get($key)) {
-            return $cached;
-        }
+        if ($cached = $cache->get($key)) return $cached;
 
         try {
             $res = Remote::get($url, ['timeout' => 12, 'headers' => ['Cache-Control' => 'no-cache']]);
@@ -98,19 +157,43 @@ class SediPage extends Page
         } catch (\Throwable $e) {
             $csv = @file_get_contents($url);
         }
-        if ($csv === false || $csv === null) return [];
+        if (!$csv) return [];
 
-        $rows = $this->parseCsvString($csv, ','); // Google export = virgola
+        $rows = $this->parseCsvString($csv, ','); // export Google = virgola
         $cache->set($key, $rows, $this->cacheTtlSeconds());
         return $rows;
     }
 
-    /** =========================
-     *  Rows -> children virtuali
-     *  ========================= */
+    /* -------------------
+       CSV locale → righe
+    ------------------- */
+    protected function rowsFromCsvFile(): array
+    {
+        if ($this->csv_data()->isEmpty()) return [];
+        $file = $this->csv_data()->toFile();
+        if (!$file) return [];
+
+        $cache = kirby()->cache('sedi');
+        $mod   = (int)($file->modified() ?? 0);
+        $key   = 'rows.csvfile.' . $this->id() . '.' . sha1($file->filename() . '|' . $mod);
+
+        if ($cached = $cache->get($key)) return $cached;
+
+        try { $csv = $file->read(); } catch (\Throwable $e) { $csv = null; }
+        if (!$csv) return [];
+
+        $rows = $this->parseCsvString($csv, ','); // forziamo virgola
+        $cache->set($key, $rows, $this->cacheTtlSeconds());
+        return $rows;
+    }
+
+    /* ---------------------------
+       Factory: righe → pagine
+    --------------------------- */
     protected function rowsToPages(array $rows): Pages
     {
-        $children = array_map(function ($r) {
+        $seen = [];
+        $children = array_map(function ($r) use (&$seen) {
             $nome      = $r['nome']       ?? ($r['nome esteso della lega'] ?? '');
             $indirizzo = $r['indirizzo']  ?? '';
             $cap       = $r['cap']        ?? '';
@@ -119,19 +202,31 @@ class SediPage extends Page
             $prov      = $r['provincia']  ?? ($r['prov'] ?? '');
             $mail      = $r['email']      ?? ($r['email lega'] ?? '');
             $tel       = $r['telefono']   ?? ($r['telefono lega'] ?? '');
+            $citta     = $r['citta']      ?? ($r['città'] ?? '');
+
+            $baseSlug = Str::slug($nome ?: 'sede');
+            $slug     = $baseSlug;
+            $i        = 1;
+            while (isset($seen[$slug])) $slug = $baseSlug . '-' . (++$i);
+            $seen[$slug] = true;
+
+            // coerciamo lat/lng
+            $lat = str_replace(',', '.', (string)$lat);
+            $lng = str_replace(',', '.', (string)$lng);
 
             return [
-                'slug'     => Str::slug($nome),
+                'slug'     => $slug,
                 'template' => 'sede',
                 'model'    => 'sede',
                 'num'      => 0,
                 'content'  => [
-                    'title'      => $nome,
+                    'title'      => $nome ?: 'Sede',
                     'nome'       => $nome,
                     'indirizzo'  => $indirizzo,
+                    'citta'      => $citta,
                     'cap'        => $cap,
-                    'lat'        => $lat,
-                    'lng'        => $lng,
+                    'lat'        => is_numeric($lat) ? (string)(float)$lat : (string)$lat,
+                    'lng'        => is_numeric($lng) ? (string)(float)$lng : (string)$lng,
                     'prov'       => $prov,
                     'mail'       => $mail,
                     'tel'        => $tel,
@@ -143,17 +238,50 @@ class SediPage extends Page
         return Pages::factory($children, $this);
     }
 
-    /** =========================
-     *  children()
-     *  ========================= */
-    public function children(): Pages
+    /* ---------------------------------------
+       API pubblica (solo Frontend)
+    --------------------------------------- */
+    public function sediItems(): Pages
     {
-        if ($this->children instanceof Pages) {
-            return $this->children;
+        // In Panel NON generiamo i virtual children (evita spinner/errori)
+        if ($this->isPanelRequest()) {
+            return new Pages([], $this);
         }
 
-        // Unica sorgente supportata: Google Sheet
-        $rows = $this->rowsFromGoogleSheet();
-        return $this->children = $this->rowsToPages($rows);
+        static $cacheLocal = null;
+        if ($cacheLocal instanceof Pages) return $cacheLocal;
+
+        $source = (string)$this->data_source()->or('gsheet');
+        $rows = [];
+
+        if ($source === 'csvfile') {
+            $rows = $this->rowsFromCsvFile();
+            if (empty($rows)) $rows = $this->rowsFromGoogleSheet();
+        } else {
+            $rows = $this->rowsFromGoogleSheet();
+            if (empty($rows)) $rows = $this->rowsFromCsvFile();
+        }
+
+        return $cacheLocal = $this->rowsToPages($rows);
+    }
+
+    /* ---------------------------------------
+       Routing dei virtual children
+       - In Panel torniamo ai children “reali”
+    --------------------------------------- */
+    public function children(): Pages
+    {
+        if ($this->isPanelRequest()) {
+            return parent::children();
+        }
+        return $this->sediItems();
+    }
+
+    public function child(string $slug): ?Page
+    {
+        if ($this->isPanelRequest()) {
+            return parent::children()->findBy('slug', $slug);
+        }
+        return $this->children()->findBy('slug', $slug);
     }
 }

@@ -1,48 +1,93 @@
-# site/blueprints/pages/sedi.yml (estratto)
-fields:
-  # Google Sheet
-  gsheet_url:
-    label: Google Sheet – URL export CSV (opzionale)
-    type: url
-    when:
-      data_source: gsheet
+title: Sedi
+options:
+  changeTemplate: false
+  changeStatus: true
+  delete: false
+  duplicate: true
 
-  gsheet_id:
-    label: Google Sheet ID
-    type: text
-    width: 1/4
+columns:
+  - width: 3/3
+    sections:
+      content:
+        type: fields
+        fields:
 
-  gsheet_gid:
-    label: GID della tab
-    type: text
-    width: 1/4
-    default: "0"
+          data_source:
+            label: Sorgente dati
+            type: radio
+            default: gsheet
+            columns: 2
+            options:
+              gsheet: Google Sheet
+              csvfile: CSV locale
+            help: Scegli se leggere i dati da un Google Sheet (CSV export) oppure da un file .csv caricato nella pagina.
 
-  # Cache
-  cache_ttl_minutes:
-    label: Cache (minuti)
-    type: number
-    width: 1/4
-    min: 1
-    step: 1
-    default: 10
-    help: Per ridurre i tempi di caricamento
+          # Google Sheet
+          gsheet_url:
+            label: Google Sheet – URL export CSV (opzionale)
+            type: url
+            when:
+              data_source: gsheet
+            help: Es. https://docs.google.com/spreadsheets/d/XXXX/export?format=csv&gid=0
 
-  # Mappa
-  mapbox_show_controls:
-    label: Mostra controlli zoom
-    type: toggle
-    default: true
-    width: 1/4
+          gsheet_id:
+            label: Google Sheet ID
+            type: text
+            width: 1/2
+            when:
+              data_source: gsheet
 
-  mapbox_style_url:
-    label: Mapbox Style URL
-    type: text
-    width: 1/1
-    help: Es. mapbox://styles/tuoutente/tuostile
+          gsheet_gid:
+            label: GID della tab
+            type: text
+            width: 1/2
+            default: "0"
+            when:
+              data_source: gsheet
 
-  marker:
-    label: Svg del marker per la mappa
-    type: files
-    width: 1/1
-    max: 1
+          # CSV locale
+          csv_data:
+            label: CSV locale (opzionale)
+            type: files
+            multiple: false
+            layout: cards
+            uploads:
+              template: document
+              accept:
+                mime: text/csv
+                extension:
+                  - csv
+            help: Carica un file .csv con le stesse intestazioni previste (Nome, Indirizzo della Lega, Citta, Prov, Cap, Telefono Lega, Email Lega, LAT, LNG).
+            when:
+              data_source: csvfile
+
+          # Cache
+          cache_ttl_minutes:
+            label: Cache (minuti)
+            type: number
+            width: 1/3
+            min: 1
+            step: 1
+            default: 10
+            help: Per ridurre i tempi di caricamento
+
+          # Mappa
+          mapbox_show_controls:
+            label: Mostra controlli zoom
+            type: toggle
+            default: true
+            width: 1/3
+
+          mapbox_style_url:
+            label: Mapbox Style URL
+            type: text
+            width: 1/3
+            placeholder: mapbox://styles/tuoutente/tuostile
+            help: Puoi incollare anche un URL completo di Mapbox Studio; verrà normalizzato.
+
+          marker:
+            label: Svg del marker per la mappa
+            type: files
+            width: 1/1
+            max: 1
+            help: Se non impostato, verrà usato il fallback in assets/fallback/marker-default.png

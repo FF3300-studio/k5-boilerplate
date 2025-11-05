@@ -4,19 +4,38 @@ use Kirby\Toolkit\Str;
 
 return function ($page, $site, $kirby) {
 
-    // Children virtuali dal model (Google Sheet)
-    $all = $page->children();
+    // Avvisi UI su sorgente
+    $alerts = [];
+    if ((string)$page->data_source()->or('gsheet') === 'csvfile' && $page->csv_data()->isEmpty()) {
+        $alerts[] = 'Sorgente selezionata: CSV locale. Nessun file caricato. Carica un file .csv nel campo “CSV locale”.';
+    }
 
-    // Filtro provincia
-    $param = get('provincia'); // null | 'tutte' | codice/nome
+    // Virtual children (dal Model)
+    $all = $page->sediItems();
+
+    // --- FILTRO PROVINCIA (robusto: normalizza entrambi i lati) ---
+    $paramRaw = get('provincia');
+    $param    = $paramRaw ?? '';
+    $norm = function ($v) {
+        $v = (string)$v;
+        $v = trim($v);
+        $v = str_replace([' ’ ', '  '], ' ', $v);
+        $v = Str::slug(Str::lower($v), ''); // rimuove spazi e segni, tutto minuscolo
+        return $v;
+    };
+
     if ($param && strtolower($param) !== 'tutte') {
-        $collection = $all->filterBy('prov', $param);
+        $needle = $norm($param);
+        $collection = $all->filter(function ($p) use ($needle, $norm) {
+            $prov = $norm($p->prov());
+            return $prov === $needle;
+        });
     } else {
         $collection = $all;
         $param = $param ?? '';
     }
 
-    // Province per la select (config/province.php oppure derivate)
+    // --- PROVINCE SELECT ---
     $provinceMapPath = kirby()->root('site') . '/config/province.php';
     if (is_file($provinceMapPath)) {
         /** @var array $province */
@@ -29,35 +48,29 @@ return function ($page, $site, $kirby) {
         $province = array_combine($keys, $keys);
     }
 
-    // Features GeoJSON — popup SENZA provincia (solo Nome + Indirizzo)
+    // --- GEOJSON FEATURES calcolate lato server (nessun fetch necessario) ---
     $features = [];
     foreach ($collection as $item) {
         $latStr = str_replace(',', '.', trim((string)$item->lat()));
         $lngStr = str_replace(',', '.', trim((string)$item->lng()));
-
         if ($latStr === '' || $lngStr === '' || !is_numeric($latStr) || !is_numeric($lngStr)) {
             continue;
         }
-
         $lat = (float)$latStr;
         $lng = (float)$lngStr;
         if ($lat === 0.0 && $lng === 0.0) continue;
 
-        $title     = (string)$item->nome();
+        $title     = (string)$item->nome()->or($item->title());
         $indirizzo = (string)$item->indirizzo();
         $url       = $item->url();
 
         $titleHtml     = str_replace("'", "’", $title);
         $indirizzoHtml = str_replace("'", "’", $indirizzo);
-
-        $textHtml = "<strong>{$titleHtml}</strong><br>{$indirizzoHtml}";
+        $textHtml      = "<strong>{$titleHtml}</strong><br>{$indirizzoHtml}";
 
         $features[] = [
             'type'       => 'Feature',
-            'geometry'   => [
-                'type'        => 'Point',
-                'coordinates' => [$lng, $lat],
-            ],
+            'geometry'   => ['type' => 'Point', 'coordinates' => [$lng, $lat]],
             'properties' => [
                 'title' => $title,
                 'text'  => $textHtml,
@@ -66,34 +79,7 @@ return function ($page, $site, $kirby) {
         ];
     }
 
-    // Fallback se filtro svuota tutto
-    if (empty($features) && $param && strtolower($param) !== 'tutte') {
-        foreach ($all as $item) {
-            $latStr = str_replace(',', '.', trim((string)$item->lat()));
-            $lngStr = str_replace(',', '.', trim((string)$item->lng()));
-            if ($latStr === '' || $lngStr === '' || !is_numeric($latStr) || !is_numeric($lngStr)) continue;
-            $lat = (float)$latStr; $lng = (float)$lngStr;
-            if ($lat === 0.0 && $lng === 0.0) continue;
-
-            $title     = (string)$item->nome();
-            $indirizzo = (string)$item->indirizzo();
-            $url       = $item->url();
-
-            $titleHtml     = str_replace("'", "’", $title);
-            $indirizzoHtml = str_replace("'", "’", $indirizzo);
-            $textHtml      = "<strong>{$titleHtml}</strong><br>{$indirizzoHtml}";
-
-            $features[] = [
-                'type'       => 'Feature',
-                'geometry'   => ['type' => 'Point', 'coordinates' => [$lng, $lat]],
-                'properties' => ['title' => $title, 'text' => $textHtml, 'url' => $url],
-            ];
-        }
-        $param = '';
-        $collection = $all;
-    }
-
-    // Centro & zoom
+    // --- CENTRO & ZOOM ---
     $center = ['lng' => 12.5065419, 'lat' => 41.9005635]; // Roma
     $zoom   = ($param && $param !== '' && $param !== 'tutte') ? 8 : 5;
     if (!empty($features) && $param && $param !== '' && $param !== 'tutte') {
@@ -101,42 +87,41 @@ return function ($page, $site, $kirby) {
         $center = ['lng' => (float)$p['geometry']['coordinates'][0], 'lat' => (float)$p['geometry']['coordinates'][1]];
     }
 
-    // Mapbox: token
-    $mapboxToken = (string)$site->mapbox_token()->or('pk.eyJ1IjoiZmYzMzAwIiwiYSI6ImNsdWFhdzJqeTBmaTEya21tdXJ2bmJhaTMifQ.kOq0BAo-oKwgv2Do0rgG7A');
-
-    // Normalizzazione stile dal Panel
-    $styleRaw = trim((string)$page->mapbox_style_url()->value());
-    $styleUrl = null;
+    // --- MAPBOX token & style ---
+    $mapboxToken = (string)(option('mapbox.token') ?: $site->mapbox_token()->or(''));
+    $styleRaw    = trim((string)$page->mapbox_style_url()->value());
+    $styleUrl    = null;
 
     if ($styleRaw !== '') {
-        // 1) mapbox://styles/{user}/{style}
         if (preg_match('~^mapbox://styles/[^/]+/[^/]+$~i', $styleRaw)) {
             $styleUrl = $styleRaw;
-        }
-        // 2) https://api.mapbox.com/styles/v1/{user}/{style}
-        elseif (preg_match('~^https?://api\.mapbox\.com/styles/v1/[^/]+/[^/?#]+~i', $styleRaw)) {
+        } elseif (preg_match('~^https?://api\.mapbox\.com/styles/v1/[^/]+/[^/?#]+~i', $styleRaw)) {
             $styleUrl = $styleRaw;
-        }
-        // 3) https://studio.mapbox.com/styles/{user}/{style}/  -> converti
-        elseif (preg_match('~^https?://studio\.mapbox\.com/styles/([^/]+)/([^/]+)/?~i', $styleRaw, $m)) {
+        } elseif (preg_match('~^https?://studio\.mapbox\.com/styles/([^/]+)/([^/]+)/?~i', $styleRaw, $m)) {
             $styleUrl = 'mapbox://styles/' . $m[1] . '/' . $m[2];
-        }
-        // 4) qualsiasi altra cosa (es. JSON custom) — lascio passare così com’è
-        else {
+        } else {
             $styleUrl = $styleRaw;
         }
     }
-
-    // Fallback piacevole se nulla o non riconosciuto
-    if (!$styleUrl) {
-        $styleUrl = 'mapbox://styles/mapbox/light-v11';
-    }
+    if (!$styleUrl) $styleUrl = 'mapbox://styles/mapbox/light-v11';
 
     $showControls = $page->mapbox_show_controls()->toBool();
 
-    // Pacchetto template
+    // --- VERSION per .json (rimane disponibile) ---
+    $ttlMinutes    = (int)$page->cache_ttl_minutes()->or(10)->value();
+    $ttlSeconds    = max(60, $ttlMinutes * 60);
+    $versionBucket = (int) floor(time() / $ttlSeconds);
+    $featuresUrl   = $page->url() . '.json?v=' . $versionBucket;
+
+    // --- MARKER dal blueprint pagina (obbligatorio) ---
+    $markerUrl = null;
+    if ($page->marker()->isNotEmpty() && ($f = $page->marker()->toFile())) {
+        $markerUrl = $f->url();
+    } else {
+        $alerts[] = 'Nessun marker impostato: carica un file nel campo “marker” della pagina Sedi.';
+    }
+
     $mapData = [
-        'features'     => $features,
         'center'       => $center,
         'zoom'         => $zoom,
         'token'        => $mapboxToken,
@@ -144,15 +129,15 @@ return function ($page, $site, $kirby) {
         'showControls' => $showControls,
     ];
 
-    // Fallback $formData per snippet esterni
-    $formData = static fn($formPage = null) => [
-        'responses'     => [],
-        'responsesRead' => [],
-        'count'         => 0,
-        'max'           => null,
-        'available'     => null,
-        'percent'       => 0,
-    ];
-
-    return compact('collection', 'province', 'param', 'mapData', 'formData');
+    // Passo le features già pronte al template
+    return compact(
+        'collection',
+        'province',
+        'param',
+        'mapData',
+        'alerts',
+        'featuresUrl',
+        'markerUrl',
+        'features'     // <— PRONTE
+    );
 };
