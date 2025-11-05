@@ -1,0 +1,71 @@
+@use "../shared" as *;
+@import "../base/typography";
+
+/* BLOCK CTA */
+.block-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: $spacer / 3 $spacer * 2;
+  margin-bottom: $spacer * 2;
+  @include media-breakpoint-up(xl) {
+    padding: $spacer-xl / 3 $spacer-xl * 2;
+    margin-bottom: $spacer-xl * 2;
+  }
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: $spacer-sm / 3 $spacer-sm * 2;
+    margin-bottom: $spacer-sm * 2;
+  }
+  a {
+    display: inline-block;
+    flex-grow: 1;
+    min-width: fit-content;
+    white-space: nowrap;
+    @extend %button;
+    @extend %small;
+    font-weight: 700;
+    font-family: "extrabold";
+    border: 2px solid $color-black;
+    
+    margin: $spacer/3 $spacer/6;
+    padding: $spacer / 1.5 $spacer * 1.5;
+    @include media-breakpoint-up(xl) {
+    margin: $spacer-xl/3 $spacer-xl/6;
+      padding: $spacer-xl / 1.5 $spacer-xl * 1.5;
+    }
+    @include media-breakpoint-down(sm) {
+      margin: $spacer-sm / 2 $spacer-sm 0 0;
+      padding: $spacer-sm / 1.5 $spacer-sm * 1.5;
+    }
+    &:hover {
+      color: $color-white!important;
+      background-color: $color-hover!important;
+      border-color: $color-hover!important;
+    }
+    // Varianti
+    &.square {
+      border-radius: 0;
+    }
+    &.round {
+      border-radius: 100vw;
+    }
+    &.positive {
+      color: $color-black;
+      background-color: $color-white;
+      &:hover {
+        color: $color-white;
+        background-color: $color-hover;
+      }
+    }
+    &.negative {
+      color: $color-white;
+      background-color: $color-black;
+      &:hover {
+        color: $color-white;
+        background-color: $color-hover;
+      }
+    }
+  }
+}

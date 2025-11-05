@@ -1,0 +1,178 @@
+@use "../settings" as *;
+
+%micro {
+  font-size: $micro;
+  line-height: $micro-lineh;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $micro-xl;
+    line-height: $micro-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $micro-sm;
+    line-height: $micro-lineh-sm;
+  }
+}
+
+%extrasmall {
+  font-size: $extrasmall;
+  line-height: $extrasmall-lineh;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $extrasmall-xl;
+    line-height: $extrasmall-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $extrasmall-sm;
+    line-height: $extrasmall-lineh-sm;
+  }
+}
+
+%small {
+  font-size: $small;
+  line-height: $small-lineh;
+  font-variation-settings: "wdth" 98;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $small-xl;
+    line-height: $small-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $small-sm;
+    line-height: $small-lineh-sm;
+  }
+}
+
+%medium {
+  font-size: $medium;
+  line-height: $medium-lineh;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $medium-xl;
+    line-height: $medium-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $medium-sm;
+    line-height: $medium-lineh-sm;
+  }
+}
+
+%large {
+  font-size: $large;
+  line-height: $large-lineh;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $large-xl;
+    line-height: $large-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $large-sm;
+    line-height: $large-lineh-sm;
+  }
+}
+
+%extralarge {
+  font-size: $extralarge;
+  line-height: $extralarge-lineh;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $extralarge-xl;
+    line-height: $extralarge-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $extralarge-sm;
+    line-height: $extralarge-lineh-sm;
+  }
+}
+
+%ultralarge {
+  font-size: $ultralarge;
+  line-height: $ultralarge-lineh;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $ultralarge-xl;
+    line-height: $ultralarge-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $ultralarge-sm;
+    line-height: $ultralarge-lineh-sm;
+  }
+}
+
+%massive {
+  font-size: $massive;
+  line-height: $massive-lineh;
+
+  @include media-breakpoint-up(xl) {
+    font-size: $massive-xl;
+    line-height: $massive-lineh-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    font-size: $massive-sm;
+    line-height: $massive-lineh-sm;
+  }
+}
+
+%button {
+  padding: $spacer / 2.5 $spacer;
+  @extend %extrasmall;
+  border-radius: 100vw;
+  border: 2px solid $color-black;
+}
+
+* strong {
+  font-variation-settings: "wght" $font-bold;
+}
+
+h1 {
+  @extend %massive;
+}
+
+h2 {
+  @extend %ultralarge;
+}
+
+h3 {
+  @extend %extralarge;
+}
+
+h4 {
+  @extend %large;
+}
+
+h5 {
+  @extend %medium;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0px $spacer * 3;
+  margin-top: 0;
+  margin-bottom: $spacer;
+  color: $color-black;
+
+  @include media-breakpoint-up(xl) {
+    margin: 0px $spacer-xl * 3;
+    margin-bottom: $spacer-xl;
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin: 0px $spacer-sm * 3;
+    margin-bottom: $spacer-sm;
+  }
+}
+
+* p a {
+  text-decoration: underline;
+}

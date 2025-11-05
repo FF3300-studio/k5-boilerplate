@@ -1,0 +1,117 @@
+/* Design tokens and typography configuration */
+
+$font-regular: 400;
+$font-medium: 600;
+$font-bold: 700;
+$font-extrabold: 800;
+
+@font-face {
+  font-family: "freak";
+  src: url("../fonts/FREAKGroteskNext-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "extrabold";
+  src: url("../fonts/InstrumentSans.ttf") format("truetype");
+  font-variation-settings: "wght" $font-extrabold;
+}
+
+@font-face {
+  font-family: "black";
+  src: url("../fonts/InstrumentSans.ttf") format("truetype");
+  font-variation-settings: "wght" $font-bold;
+}
+
+@font-face {
+  font-family: "medium";
+  src: url("../fonts/InstrumentSans.ttf") format("truetype");
+  font-variation-settings: "wght" $font-medium;
+}
+
+@font-face {
+  font-family: "light";
+  src: url("../fonts/InstrumentSans.ttf") format("truetype");
+  font-variation-settings: "wght" $font-regular;
+}
+
+$color-white: #fff;
+$color-black: #000;
+$color-primary: #fff;
+$color-secondary: #fff;
+$color-theme: #b6d71d;
+$color-theme-bis: #ce0058;
+$color-hover: #9157f3;
+$color-yellow: #ffcc34;
+$color-magenta: #e55185;
+$color-cyan: #059fdb;
+$color-green: #b6d71d;
+$color-red: #d2195a;
+$color-purple: #9157f3;
+$color-neutral-dark: #9c9b9b;
+$color-filter-bar: #e1e1e1;
+
+$micro: 10px;
+$extrasmall: 12px;
+$small: 16px;
+$medium: 20px;
+$large: 24px;
+$extralarge: 32px;
+$ultralarge: 40px;
+$massive: 48px;
+
+$micro-xl: 14px;
+$extrasmall-xl: 16px;
+$small-xl: 20px;
+$medium-xl: 24px;
+$large-xl: 32px;
+$extralarge-xl: 40px;
+$ultralarge-xl: 48px;
+$massive-xl: 64px;
+
+$micro-sm: 10px;
+$extrasmall-sm: 12px;
+$small-sm: 15px;
+$medium-sm: 18px;
+$large-sm: 22px;
+$extralarge-sm: 28px;
+$ultralarge-sm: 32px;
+$massive-sm: 36px;
+
+$micro-lineh: 1.15;
+$extrasmall-lineh: 1.15;
+$small-lineh: 1.15;
+$medium-lineh: 1.15;
+$large-lineh: 1.15;
+$extralarge-lineh: 1.15;
+$ultralarge-lineh: 1.1;
+$massive-lineh: 1;
+
+$micro-lineh-xl: 1.15;
+$extrasmall-lineh-xl: 1.15;
+$small-lineh-xl: 1.15;
+$medium-lineh-xl: 1.15;
+$large-lineh-xl: 1.15;
+$extralarge-lineh-xl: 1.15;
+$ultralarge-lineh-xl: 1.1;
+$massive-lineh-xl: 1;
+
+$micro-lineh-sm: 1.15;
+$extrasmall-lineh-sm: 1.15;
+$small-lineh-sm: 1.15;
+$medium-lineh-sm: 1.15;
+$large-lineh-sm: 1.15;
+$extralarge-lineh-sm: 1.15;
+$ultralarge-lineh-sm: 1.1;
+$massive-lineh-sm: 1;
+
+$spacer-xl: 15px;
+$spacer: 15px;
+$spacer-sm: 10px;
+
+$grid-breakpoints: (
+  xs: 500px,
+  sm: 850px,
+  md: 1080px,
+  lg: 1280px,
+  xl: 1400px,
+);

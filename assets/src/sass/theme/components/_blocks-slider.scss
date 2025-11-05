@@ -1,0 +1,838 @@
+@use "../shared" as *;
+@import "../base/typography";
+
+/* BLOCKS LAYOUT */
+/* CSS relativo al componente LAYOUT DI BLOCCHI */
+.single-block {
+  margin-bottom: $spacer * 2;
+  @include media-breakpoint-up(xl) {
+    margin-bottom: $spacer-xl * 2;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-bottom: $spacer-sm * 2;
+  }
+}
+/* BLOCCHI BASE */
+#sticky {
+  position: sticky;
+}
+hr {
+  border: none;
+  border-bottom: 2px solid $color-black;
+  margin: 0 0 $spacer * 2;
+  @include media-breakpoint-up(xl) {
+    margin: 0 0 $spacer-xl * 2;
+  }
+  @include media-breakpoint-down(sm) {
+    margin: $spacer 0;
+  }
+}
+.blocks {
+  .column {
+    @include media-breakpoint-down(sm) {
+      padding: 0!important;
+    }
+  }
+  ul li {
+    @extend %small;
+    line-height: 1.35;
+  }
+  figure,
+  .block-app-inner .image {
+    margin: 0;
+    margin-bottom: $spacer * 1;
+    @include media-breakpoint-up(xl) {
+      margin: 0;
+      margin-bottom: $spacer-xl * 1;
+      }
+    @include media-breakpoint-down(sm) {
+      margin: 0;
+      margin-bottom: $spacer-sm * 1;
+      }
+    img {
+      margin-bottom: $spacer / 3;
+      @include media-breakpoint-up(xl) {
+        margin-bottom: $spacer-xl / 3;
+      }
+      @include media-breakpoint-down(sm) {
+        margin: 0 auto;
+      }
+    }
+  }
+  // Liste annidate
+  ul ul {
+    margin: 0 $spacer;
+    padding: 0;
+    li {
+      margin-top: 0;
+      padding: 0;
+    }
+  }
+  // Lista con struttura custom
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: auto;
+    padding: 0;
+    margin: 0 $spacer * 3;
+    background-color: $color-white;
+    @extend %medium;
+    @include media-breakpoint-up(xl) {
+      margin: 0 $spacer-xl * 3;
+    }
+    @include media-breakpoint-down(sm) {
+      margin: 0 $spacer-sm * 3;
+      font-size: 20px;
+    }
+    li {
+      line-height: 1.35;
+      padding: 0;
+      width: 100%;
+      color: $color-black;
+      margin-bottom: $spacer / 2;
+      &:not(:first-child) {
+        border-top: 1px solid $color-primary;
+      }
+      a {
+        color: $color-white;
+        width: 100%;
+        &:hover {
+          color: $color-theme;
+        }
+        span {
+          white-space: nowrap;
+          min-width: 25%;
+          display: inline-block;
+          width: max-content;
+          color: $color-white;
+          &:not(:last-of-type) {
+            margin-right: $spacer * 3;
+          }
+        }
+      }
+    }
+  }
+  .card-info {
+    h2 {
+      font-size: $medium;
+    }
+    p {
+      font-size: $small;
+    }
+  }
+}
+/* BLOCK card slider */
+.block-slider {
+  min-height: fit-content;
+  max-width: 100%;
+  margin: 0;
+  margin-bottom: $spacer * 2;
+  @include media-breakpoint-up(xl) {
+    margin: 0;
+    margin-bottom: $spacer-xl * 2;
+  }
+  @include media-breakpoint-down(sm) {
+    margin: 0;
+    margin-bottom: $spacer-sm * 2;
+  }
+  .swiper {
+    min-height: fit-content;
+    margin: 0;
+    .swiper-navigation-icon{ 
+      width: auto;
+      max-height: $spacer*1.25;
+      color: $color-white!important;
+    }
+    .swiper-button-prev,
+    .swiper-button-next {
+      top: unset;
+      background-color: $color-black;
+      border-radius: 100vw;
+      width: $spacer * 3;
+      height: $spacer * 3;
+      @include media-breakpoint-up(xl) {
+        bottom: $spacer-xl * 3;
+        width: $spacer-xl * 3;
+        height: $spacer-xl * 3;
+      }
+      @include media-breakpoint-down(sm) {
+        bottom: $spacer-sm * 3;
+        width: $spacer-sm * 4;
+        height: $spacer-sm * 4;
+      }
+      &::after {
+        color: $color-yellow;
+        position: relative;
+        font-size: $spacer * 1.5;
+        @include media-breakpoint-up(xl) {
+          font-size: $spacer-xl * 1.5;
+        }
+        @include media-breakpoint-down(sm) {
+          font-size: $spacer-sm * 2.5;
+        }
+      }
+    }
+    .swiper-button-prev {
+      left: $spacer * 3;
+      @include media-breakpoint-up(xl) {
+        left: $spacer-xl * 3;
+      }
+      @include media-breakpoint-down(sm) {
+        left: $spacer-sm * 3;
+      }
+      &::after {
+        right: 1px;
+        @include media-breakpoint-down(sm) {
+          right: 0;
+        }
+      }
+    }
+    .swiper-button-next {
+      right: $spacer * 3;
+      @include media-breakpoint-up(xl) {
+        right: $spacer-xl * 3;
+      }
+      @include media-breakpoint-down(sm) {
+        right: $spacer-sm * 3;
+      }
+      &::after {
+        left: 1px;
+        @include media-breakpoint-down(sm) {
+          left: 0;
+        }
+      }
+    }
+    .swiper-wrapper {
+      height: fit-content;
+      .swiper-slide {
+        position: relative;
+        max-height: 100vh;
+        @include media-breakpoint-down(sm) {
+          min-height: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          align-items: flex-start;
+          justify-content: flex-end;
+        }
+
+        .crop {
+          height: 100%;
+          min-height: 80vh;
+          object-fit: cover;
+          background-position: center;
+          @include media-breakpoint-down(sm) {
+            min-height: 100vw;
+          }
+        }
+        .text {
+          position: absolute;
+          top: unset;
+          left: 0;
+          bottom: 0;
+          padding: $spacer * 6;
+          @include media-breakpoint-up(xl) {
+            padding: $spacer-xl * 6;
+          }
+          @include media-breakpoint-down(sm) {
+            padding: $spacer-sm * 3;
+            bottom: $spacer-sm * 6;
+          }
+          h2 {
+            color: $color-white;
+            font-family: "extrabold", Helvetica, Arial, sans-serif;
+            margin-left: 0;
+            margin-right: 0;
+            @extend %massive;
+          }
+          .bodycopy {
+            p {
+              color: $color-white;
+              margin-left: 0;
+              margin-right: 0;
+              @extend %extralarge;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.slide-informations {
+  z-index: 99;
+  min-width: 20%;
+  max-width: 45%;
+  margin-bottom: $spacer * 3;
+
+  @include media-breakpoint-up(xl) {
+    margin-bottom: $spacer-xl * 3;
+    min-width: 33%;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-bottom: $spacer-sm * 3;
+    min-width: 100%;
+    padding: $spacer-sm * 2;
+  }
+  * {
+    font-size: 120%;
+  }
+}
+/* BLOCK cards slider */
+.block-cards {
+  margin-bottom: $spacer * 3;
+  @include media-breakpoint-up(xl) {
+    margin-bottom: $spacer-xl * 3;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-bottom: $spacer-sm * 3;
+  }
+  p {
+    margin: 0;
+    padding: 0;
+  }
+  .block-cards-title {
+    padding: $spacer * 3;
+    padding-bottom: $spacer * 2;
+    @include media-breakpoint-up(xl) {
+      padding: $spacer-xl * 3;
+      padding-bottom: $spacer-xl * 2;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: $spacer-sm * 3;
+      padding-bottom: $spacer-sm * 2;
+    }
+    h1 {
+      font-family: "extrabold", Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      @extend %ultralarge;
+    }
+  }
+  .block-cards-list {
+    padding: 0 $spacer * 3;
+    @include media-breakpoint-up(xl) {
+      padding: 0 $spacer-xl * 3;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: 0 $spacer-sm * 3;
+    }
+    &.swiper-container {
+      padding-bottom: $spacer * 4;
+      @include media-breakpoint-up(xl) {
+        padding-bottom: $spacer-xl * 4;
+      }
+      @include media-breakpoint-down(sm) {
+        padding-bottom: 0;
+      }
+      .single-cards {
+        // width: 25vw;
+        margin-right: $spacer * 2;
+        @include media-breakpoint-up(xl) {
+          margin-right: $spacer-xl * 2;
+        }
+        @include media-breakpoint-down(sm) {
+          width: 75vw;
+          height: auto;
+          margin:0 auto!important;
+        }
+      }
+      .swiper-button-prev,
+      .swiper-button-next {
+        top: unset;
+        background-color: $color-black;
+        border-radius: 100vw;
+        width: $spacer * 3;
+        height: $spacer * 3;
+        @include media-breakpoint-up(xl) {
+          width: $spacer-xl * 3;
+          height: $spacer-xl * 3;
+          bottom: $spacer-xl * 3;
+        }
+        @include media-breakpoint-down(sm) {
+          display: none;
+          width: $spacer-sm * 4;
+          height: $spacer-sm * 4;
+          bottom: $spacer-sm * 3;
+        }
+        &::after {
+          color: $color-yellow;
+          font-size: $spacer * 1.5;
+          @include media-breakpoint-up(xl) {
+            font-size: $spacer-xl * 1.5;
+          }
+          @include media-breakpoint-down(sm) {
+            font-size: $spacer-sm * 2.5;
+          }
+        }
+      }
+      .swiper-button-prev {
+        left: $spacer * 3;
+        @include media-breakpoint-up(xl) {
+          left: $spacer-xl * 3;
+        }
+        @include media-breakpoint-down(sm) {
+          left: $spacer-sm * 5;
+        }
+      }
+      .swiper-button-next {
+        right: $spacer * 3;
+        @include media-breakpoint-up(xl) {
+          right: $spacer-xl * 3;
+        }
+        @include media-breakpoint-down(sm) {
+          right: $spacer-sm * 5;
+        }
+      }
+    }
+    &.grid {
+      .single-cards {
+        width: auto;
+        @include media-breakpoint-down(sm) {
+          margin-bottom: $spacer-sm * 3;
+        }
+        a {
+          height: 100%;
+        }
+      }
+    }
+    .single-cards {
+      @include media-breakpoint-up(xl) {
+        margin-bottom: $spacer-xl;
+      }
+      @include media-breakpoint-down(sm) {
+        margin-bottom: $spacer-sm;
+        height: 46vw;
+      }
+      @include media-breakpoint-down(xs) {
+        margin-bottom: $spacer-sm;
+        height: auto;
+      }
+      
+      a {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        border-radius: 2vw;
+        min-height: 32vw;
+        @include media-breakpoint-down(sm) {
+          min-height: 0;
+        }
+        .cards-thumbnail {
+          height: 18vw;
+          padding: $spacer;
+          @include media-breakpoint-up(xl) {
+            padding: $spacer-xl;
+          }
+          @include media-breakpoint-down(sm) {
+            padding: $spacer-sm;
+            height: auto;
+          }
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+          }
+        }
+        .cards-info {
+          display: inline-block;
+          min-width: 50%;
+          padding: 0 $spacer * 2;
+          @include media-breakpoint-up(xl) {
+            padding: 0 $spacer-xl * 2;
+          }
+          @include media-breakpoint-down(sm) {
+            padding: 0 $spacer-sm * 2;
+          }
+          .cards-title p {
+            color: $color-white;
+            font-family: "extrabold", Helvetica, Arial, sans-serif;
+            @extend %small;
+          }
+          .cards-text p {
+            color: $color-white;
+            margin-bottom: 0;
+            @extend %small;
+            a {
+              color: $color-theme;
+              &:hover {
+                color: $color-hover;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.cards-text {
+  p {
+    color: $color-black;
+    @extend %small;
+    margin-bottom: 0px;
+    a {
+      color: $color-theme !important;
+      &:hover {
+        color: $color-hover !important;
+      }
+    }
+  }
+}
+/* BLOCK image and text */
+.block-image-text {
+  display: flex;
+  margin-bottom: $spacer * 3;
+  padding: 0 $spacer * 3;
+  @include media-breakpoint-up(xl) {
+    margin-bottom: $spacer-xl * 3;
+    padding: 0 $spacer-xl * 3;
+  }
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+    margin-bottom: $spacer-sm * 3;
+    padding: 0 $spacer-sm * 3;
+  }
+  &.layout-text-image {
+    flex-direction: row-reverse;
+    @include media-breakpoint-down(sm) {
+      flex-direction: column;
+    }
+  }
+  p {
+    margin: 0;
+    padding: 0;
+  }
+  .image-column {
+    img {
+      height: 100%;
+      object-fit: cover;
+      @include media-breakpoint-down(sm) {
+        width: 100%;
+      }
+    }
+  }
+  .text-column {
+    background-color: $color-yellow;
+    padding: $spacer * 3;
+    @include media-breakpoint-up(xl) {
+      padding: $spacer-xl * 3;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: $spacer-sm * 3;
+    }
+    .text-column-title p {
+      @extend %ultralarge;
+      font-family: "extrabold", Helvetica, Arial, sans-serif;
+      margin-bottom: $spacer;
+      @include media-breakpoint-up(xl) {
+        margin-bottom: $spacer-xl;
+      }
+      @include media-breakpoint-down(sm) {
+        margin-bottom: $spacer-sm;
+      }
+    }
+    .text-column-text {
+      p {
+        @extend %extralarge;
+        margin-bottom: $spacer;
+        @include media-breakpoint-up(xl) {
+          margin-bottom: $spacer-xl;
+        }
+        @include media-breakpoint-down(sm) {
+          margin-bottom: $spacer-sm;
+        }
+      }
+      a {
+        @extend %extralarge;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+.layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0)
+  );
+  z-index: 0;
+}
+
+/* BLOCK persone chips*/
+.container-persone {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  .tag {
+    width: fit-content;
+    padding: $spacer/3 $spacer;
+    border-radius: 100vw;
+    background-color: $color-theme;
+    color: $color-black;
+    font-size: $medium;
+  }
+}
+/* BLOCK grid */
+.block-grid-a {
+  margin: $spacer * 3 0;
+  @include media-breakpoint-up(xl) {
+    margin: $spacer-xl * 3 0;
+  }
+  @include media-breakpoint-down(sm) {
+    margin: $spacer-sm * 3 0;
+  }
+  p,
+  h2 {
+    margin: 0;
+    padding: 0;
+  }
+  h2 {
+    font-size: 42px;
+  }
+  p {
+    font-size: 1.2vw;
+    @include media-breakpoint-down(sm) {
+      font-size: 14px;
+    }
+  }
+  .block-grid-a-title {
+    padding: $spacer * 3;
+    @include media-breakpoint-up(xl) {
+      padding: $spacer-xl * 3;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: $spacer-sm * 3;
+    }
+    h1 {
+      font-family: "extrabold", Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      @extend %ultralarge;
+      @include media-breakpoint-down(sm) {
+        padding: $spacer-sm * 2;
+      }
+    }
+  }
+}
+// Specifico invece di usare *
+.blocks .block-grid-a-title h1 {
+  line-height: 1em;
+}
+// Specificità mirata per location card
+.card-master span.location {
+  @include media-breakpoint-down(sm) {
+    min-width: 100%;
+  }
+}
+.label-grid {
+  padding: $spacer / 3 $spacer;
+  background-color: $color-black;
+  color: $color-white;
+  text-transform: uppercase;
+  text-align: left;
+  width: fit-content;
+  margin: $spacer;
+  margin-top: 0;
+  &.new{
+    background-color: $color-theme;
+    color: $color-black;  
+  }
+  &.old{
+    background-color: $color-theme-bis;
+    color: $color-white;  
+  }
+  @include media-breakpoint-up(xl) {
+    margin: $spacer-xl;
+    margin-top: 0;
+  }
+  @include media-breakpoint-down(sm) {
+    margin: $spacer-sm;
+    margin-top: $spacer;
+    margin-bottom: $spacer;
+  }
+}
+/* BLOCK grid list */
+.block-grid-a-list {
+  padding: 0;
+  margin: inherit 0!important;
+  flex-wrap: wrap;
+  justify-content: space-between; 
+  display: flex;
+  @include media-breakpoint-down(sm) {
+    display: block;
+  }
+  .single-item {
+    position: relative;
+    aspect-ratio: 5 / 3;
+    margin-bottom: $spacer;
+    @include media-breakpoint-up(xl) {
+      margin-bottom: $spacer-xl;
+    }
+    @include media-breakpoint-down(sm) {
+      margin-bottom: $spacer-sm * 3;
+    }
+    &:hover {
+      .overlay {
+        opacity: 1;
+      }
+      .item-image img {
+        filter: grayscale(100);
+      }
+    }
+    &.placeholder-image {
+      a {
+        background-color: $color-yellow;
+        .overlay {
+          display: none;
+        }
+        .item-info .item-category-province p.single-category {
+          border: 1px solid $color-black;
+        }
+      }
+    }
+    a {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      .overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: $color-yellow;
+        mix-blend-mode: multiply;
+        opacity: 0;
+        transition: opacity 0.15s linear;
+        z-index: 1;
+      }
+      .item-image {
+        width: 100%;
+        height: 100%;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          filter: grayscale(0);
+          transition: filter 0.15s linear;
+        }
+      }
+      .item-info {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: $spacer;
+        z-index: 2;
+        @include media-breakpoint-up(xl) {
+          padding: $spacer-xl;
+        }
+        @include media-breakpoint-down(sm) {
+          padding: $spacer-sm;
+        }
+        .item-title {
+          p {
+            color: $color-white;
+            font-family: "extrabold", Helvetica, Arial, sans-serif;
+            margin-bottom: 0;
+            @extend %large;
+          }
+        }
+      }
+    }
+  }
+}
+/* BLOCK slider cards */
+.block-slider-cards {
+  margin-bottom: $spacer * 3;
+  padding-bottom: $spacer * 3;
+  background-color: $color-primary;
+  @include media-breakpoint-up(xl) {
+    margin-bottom: $spacer-xl * 3;
+    padding-bottom: $spacer-xl * 3;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-bottom: $spacer-sm * 3;
+    padding-bottom: $spacer-sm * 3;
+  }
+  p,
+  h2 {
+    margin: 0;
+    padding: 0;
+  }
+  .block-slider-cards-title {
+    padding: $spacer * 3;
+    padding-bottom: $spacer * 2;
+    @include media-breakpoint-up(xl) {
+      padding: $spacer-xl * 3;
+      padding-bottom: $spacer-xl * 2;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: $spacer-sm * 3;
+      padding-bottom: $spacer-sm * 2;
+    }
+    h1 {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: $color-white;
+      font-family: "extrabold", Helvetica, Arial, sans-serif;
+      @extend %ultralarge;
+    }
+  }
+  .block-slider-cards-list {
+    margin: 0 $spacer;
+    @include media-breakpoint-up(xl) {
+      margin: 0 $spacer-xl;
+    }
+    @include media-breakpoint-down(sm) {
+      margin: 0 $spacer-sm;
+    }
+    .single-item {
+      width: 20vw;
+      margin: 0 $spacer * 2;
+      @include media-breakpoint-up(xl) {
+        margin: 0 $spacer-xl * 2;
+      }
+      @include media-breakpoint-down(sm) {
+        margin: 0 $spacer-sm * 2;
+      }
+      a {
+        display: inline-block;
+        .item-image {
+          margin-bottom: $spacer;
+          @include media-breakpoint-up(xl) {
+            margin-bottom: $spacer-xl;
+          }
+          @include media-breakpoint-down(sm) {
+            margin-bottom: $spacer-sm;
+          }
+          img {
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+          }
+        }
+        .item-title p {
+          color: $color-white;
+          font-family: "extrabold", Helvetica, Arial, sans-serif;
+          @extend %large;
+        }
+      }
+    }
+  }
+}
