@@ -1,0 +1,84 @@
+@use "../shared" as *;
+@import "../base/typography";
+
+/* COOKIE MODAL COMPONENT */
+.cookie-modal {
+  .cookie-modal__content {
+    background-color: $color-theme-bis;
+    .cookie-modal__title {
+      color: $color-black;
+    }
+    .cookie-modal__text {
+      color: $color-black;
+      a {
+        color: $color-black;
+        text-decoration: underline;
+        &:hover {
+          color: $color-hover;
+        }
+      }
+    }
+    a:hover {
+      color: $color-hover;
+    }
+    .cookie-modal__options {
+      .cookie-modal__option {
+        &.disabled {
+          // Intenzionalmente vuoto? Specificare se serve
+        }
+        .cookie-modal__checkbox {
+          background-color: transparent;
+          &:focus {
+            background-color: transparent;
+          }
+          &:checked {
+            background-color: $color-black;
+          }
+        }
+      }
+    }
+    .cookie-modal__buttons {
+      .cookie-modal__button {
+        // Specificare se necessario
+      }
+    }
+  }
+}
+// Gestione visiva del check
+.cookie-modal__checkbox:not(:checked) + .cookie-modal__check {
+  display: none;
+}
+.cookie-modal__checkbox:checked + .cookie-modal__check {
+  display: flex;
+}
+// Bottoni principali
+#cookie-accept.primary {
+  min-width: 50%;
+  background-color: $color-black;
+  color: $color-white;
+  text-align: center;
+  &:hover {
+    background-color: $color-hover;
+    color: $color-white;
+  }
+}
+#cookie-deny {
+  min-width: 50%;
+  background-color: $color-black;
+  color: $color-white;
+  text-align: center;
+  &:hover {
+    background-color: $color-hover;
+    color: $color-white;
+  }
+}
+#cookie-save {
+  min-width: 100%;
+  background-color: $color-black;
+  color: $color-white;
+  text-align: center;
+  &:hover {
+    background-color: $color-hover;
+    color: $color-white;
+  }
+}

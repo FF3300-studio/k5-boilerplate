@@ -1,0 +1,120 @@
+@use "../shared" as *;
+@import "../base/typography";
+
+/* SWIPER CONFIGURATION */
+/* CSS relativo al componente SWIPER SLIDER JS */
+.swiper {
+  margin: -2px;
+  &-container {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
+  &-scrollbar,
+  &-button-next,
+  &-button-prev {
+    color: var(--color-white);
+  }
+  &-button-next,
+  &-button-prev {
+    top: auto;
+    bottom: 30px;
+  }
+  &-pagination-bullet {
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 1;
+    border: 1px solid var(--color-white);
+    &-active {
+      background: var(--color-white);
+      border: 1px solid var(--color-white);
+    }
+  }
+}
+h2.text {
+  z-index: 99;
+}
+.swiper-slide {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include media-breakpoint-down(sm) {
+    justify-content: flex-end;
+  }
+  .image {
+    top: 0;
+    transform: translateY(50%);
+  }
+  .text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -66%);
+    text-align: left;
+    color: var(--color-white);
+    width: 85%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    h2 {
+      font-size: 4vw;
+      line-height: 1.2em;
+      font-family: "murmure";
+      margin-bottom: calc(var(--margin-bottom) * 3);
+      @media screen and (max-width: 950px) {
+        font-size: 32px;
+        line-height: 1em;
+        margin-bottom: calc(var(--margin-bottom) * 18);
+      }
+    }
+    p {
+      font-size: 24px;
+      line-height: 1.33em;
+      font-family: "regular";
+      color: var(--color-white);
+      strong {
+        font-family: "bold";
+      }
+      @media screen and (max-width: 1080px) {
+        font-size: 16px;
+        margin-bottom: var(--margin-bottom);
+      }
+    }
+  }
+  img {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    object-fit: cover;
+    min-height: 700px;
+    @media screen and (max-width: 950px) {
+      min-height: auto;
+    }
+  }
+}
+.crop {
+  overflow: hidden;
+}
+.bodycopy {
+  max-width: 33%;
+  @media screen and (max-width: 1080px) {
+    max-width: 100%;
+  }
+  p {
+    font-family: "medium";
+    font-size: 24px;
+    line-height: 1.2em;
+  }
+}
+.icon {
+  width: 100px;
+  display: flex;
+  img {
+    width: auto;
+  }
+}

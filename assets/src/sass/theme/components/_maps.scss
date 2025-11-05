@@ -1,0 +1,104 @@
+@use "../shared" as *;
+@import "../base/typography";
+
+/* BLOCK MAP */
+
+#map{
+ margin: 0 auto;
+ margin-top: -$spacer;
+ margin-bottom: $spacer * 2;
+ width: calc( 100% - ($spacer * 4))!important;
+  @include media-breakpoint-up(xl) {
+    width: calc( 100% - ($spacer-xl * 4))!important;
+    margin-bottom: $spacer-xl * 2;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-top: 0;
+    width: calc( 100% )!important;
+    margin-bottom: $spacer-sm * 2;
+  }
+}
+
+.block-map {
+  margin-bottom: $spacer * 3;
+  @include media-breakpoint-up(xl) {
+    margin-bottom: $spacer-xl * 3;
+  }
+  @include media-breakpoint-down(sm) {
+    margin-bottom: $spacer-sm * 3;
+  }
+  .block-map-title {
+    padding: $spacer * 3;
+    @include media-breakpoint-up(xl) {
+      padding: $spacer-xl * 3;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: $spacer-sm * 1.5 $spacer-sm * 3 $spacer-sm * 3;
+    }
+    h1 {
+      margin: 0;
+      padding: 0;
+      color: $color-black;
+      font-family: "extrabold", Helvetica, Arial, sans-serif;
+      @extend %ultralarge;
+    }
+  }
+}
+// Mapbox popup
+.mapboxgl-popup {
+  margin-top: 0px;
+  padding: $spacer / 2;
+  @include media-breakpoint-up(xl) {
+    padding: $spacer-xl / 2;
+  }
+  @include media-breakpoint-down(sm) {
+    padding: $spacer-sm / 2;
+  }
+  .mapboxgl-popup-content {
+    margin: 0;
+    padding: $spacer / 2;
+    background: $color-primary;
+    border-radius: $spacer;
+    @include media-breakpoint-up(xl) {
+      padding: $spacer-xl / 2;
+    }
+    @include media-breakpoint-down(sm) {
+      padding: $spacer-sm / 2;
+    }
+    p {
+      margin: 0;
+      padding: 0;
+      color: $color-black;
+      text-align: center;
+      font-size: 32px;
+      font-family: "extrabold", Helvetica, Arial, sans-serif;
+      @extend %extrasmall;
+      a {
+        color: $color-black;
+        text-decoration: none;
+        &:hover {
+          color: $color-hover;
+        }
+      }
+    }
+  }
+}
+// Pulsante di chiusura
+.mapboxgl-popup-close-button {
+  right: 0;
+  top: calc($spacer - $spacer * 1.5);
+  &:hover {
+    background: none;
+    color: $color-hover;
+  }
+}
+// Triangolino dell'anchor
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: $color-primary;
+}
+// Marker
+.marker {
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-top: -22.5px;
+}
