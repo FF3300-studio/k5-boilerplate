@@ -1,6 +1,6 @@
 <?php
 return [
   'panel' => [
-    'install' => true
+    'install' => false
   ]
 ];
