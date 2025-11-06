@@ -25,6 +25,7 @@ assets/js/*.map
 # Dipendenze Composer
 vendor/
 kirby/vendor/
+!assets/src/js/vendor/
 
 # Contenuti generati da Kirby
 content/

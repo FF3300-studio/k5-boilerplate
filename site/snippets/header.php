@@ -84,14 +84,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
   <?php endif; ?>
 
-  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-
-  <link rel="stylesheet" href="<?= url('assets/build/node_modules/bootstrap/dist/css/bootstrap.css') ?>">
-  <link rel="stylesheet" href="<?= url('assets/build/css/css.css?v=1.0.0') ?>"> <!-- usa versionamento manuale -->
+  <link rel="stylesheet" href="<?= url('assets/build/css/css.css') ?>">
 
   <!-- JS in HEAD solo se necessario -->
-  <?= js('assets/js/lazysizes.min.js') ?>
 
   <!-- Analytics -->
   <?php if (isFeatureAllowed('analytics')): ?>

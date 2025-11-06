@@ -1,6 +1,11 @@
 import { defineConfig } from 'vite';
 import liveReload from 'vite-plugin-live-reload';
 import { spawn } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ command }) => {
   const isProduction = command === 'build';
@@ -20,6 +25,14 @@ export default defineConfig(({ command }) => {
   return {
     root: 'assets/src', // Set root folder to 'src'
     base: '/', // Base URL for development
+    resolve: {
+      alias: {
+        mixitup: path.resolve(__dirname, 'assets/src/js/vendor/mixitup.js'),
+        'mixitup-multifilter': path.resolve(__dirname, 'assets/src/js/vendor/mixitup-multifilter.js'),
+        'swiper/bundle': path.resolve(__dirname, 'assets/src/js/vendor/swiper/bundle.js'),
+        'vanilla-lazyload': path.resolve(__dirname, 'assets/src/js/vendor/vanilla-lazyload.js'),
+      },
+    },
     build: {
       outDir: '../build', // Compiled output folder
       emptyOutDir: false,

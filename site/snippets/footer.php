@@ -14,11 +14,6 @@
     ]) ?>
     
 <!-- JavaScript deferiti -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
-<script src="<?= url('assets/build/node_modules/mixitup/dist/mixitup.js') ?>" defer></script>
-<script src="<?= url('assets/build/node_modules/mixitup/dist/mixitup-multifilter.js') ?>" defer></script>
-<?= js('assets/build/node_modules/bootstrap/dist/js/bootstrap.js', ['defer' => true]) ?>
 <?= js('assets/build/js/js.js', ['defer' => true]) ?>
 
   </body>
