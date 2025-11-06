@@ -3,7 +3,7 @@ return [
   'site.charset' => 'UTF-8',
   'debug'        => true,   // false in produzione
   'cache'        => true,
-  'panel.install'=> true,
+  'panel.install'=> false,
   'languages'    => true,
   'locale'       => 'it_IT.utf8',
 
