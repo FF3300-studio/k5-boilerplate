@@ -2,6 +2,8 @@
 
 namespace Site\Helpers\Collection;
 
+use Kirby\Cms\App;
+use Kirby\Cms\Collection;
 use Kirby\Cms\File;
 use Kirby\Cms\Page;
 use Kirby\Cms\Pages;
@@ -154,4 +156,46 @@ function getFormData(
     }
 
     return compact('responses', 'responsesRead', 'count', 'max', 'available', 'percent');
+}
+
+/**
+ * Returns the `formData` callable expected by templates.
+ *
+ * When a context page is provided the callable lazily resolves the actual
+ * form information via {@see getFormData()}. If no context is given, the helper
+ * produces an empty fallback that mirrors the expected structure – handy for
+ * controllers that do not expose any form but still share the same template.
+ *
+ * Usage example inside a controller:
+ *
+ * ```php
+ * return [..., 'results' => $results] + formDataFor($page);
+ * ```
+ */
+function formDataFor(?Page $context = null): array
+{
+    if ($context instanceof Page) {
+        $site = App::instance()->site();
+
+        return [
+            'formData' => static function (?Page $formPage = null) use ($context, $site): array {
+                return getFormData($formPage ?? $context, $site);
+            },
+        ];
+    }
+
+    return [
+        'formData' => static function (?Page $formPage = null): array {
+            unset($formPage);
+
+            return [
+                'responses' => new Collection(),
+                'responsesRead' => new Collection(),
+                'count' => 0,
+                'max' => null,
+                'available' => null,
+                'percent' => 0,
+            ];
+        },
+    ];
 }

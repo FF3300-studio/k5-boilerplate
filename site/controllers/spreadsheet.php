@@ -1,7 +1,7 @@
 <?php
 
-use Kirby\Cms\Collection;
 use Kirby\Cms\Pages;
+use function Site\Helpers\Collection\formDataFor;
 
 return function ($site, $pages, $page) {
 
@@ -53,21 +53,8 @@ return function ($site, $pages, $page) {
     $results = new Pages();
   }
 
-  // ====== FALLBACK PER IL FORM (NESSUN FORM SULLA PAGINA DI SEARCH) ======
-  $formData = function ($formPage = null) {
-    return [
-      'responses'     => new Collection(),
-      'responsesRead' => new Collection(),
-      'count'         => 0,
-      'max'           => null,
-      'available'     => null,
-      'percent'       => 0,
-    ];
-  };
-
   return [
     'query'    => $query,
     'results'  => $results,
-    'formData' => $formData,
-  ];
+  ] + formDataFor();
 };

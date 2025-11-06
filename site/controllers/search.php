@@ -1,6 +1,6 @@
 <?php
 
-use Kirby\Cms\Collection;
+use function Site\Helpers\Collection\formDataFor;
 
 return function ($site, $pages, $page) {
 
@@ -14,22 +14,9 @@ return function ($site, $pages, $page) {
       'stopwords'   => ['di','a','da','in','con','su','per','tra','fra','il','lo','la','gli','le']
   ]);
 
-  // ====== FALLBACK PER IL FORM (NESSUN FORM SULLA PAGINA DI SEARCH) ======
-  $formData = function ($formPage = null) {
-      return [
-          'responses'     => new Collection(),  // nessuna risposta
-          'responsesRead' => new Collection(),  // nessuna risposta letta
-          'count'         => 0,
-          'max'           => null,
-          'available'     => null,
-          'percent'       => 0,
-      ];
-  };
-
   return [
     'query'    => $query,
     'results'  => $results,
-    'formData' => $formData,
-  ];
+  ] + formDataFor();
 
 };
