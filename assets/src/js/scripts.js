@@ -33,12 +33,31 @@ const initFilters = () => {
 };
 
 const initLazyLoad = () => {
+  if (!document.querySelector('.lazy')) {
+    return;
+  }
+
   new LazyLoad({
     elements_selector: '.lazy',
   });
 };
 
-const initNavigation = () => {
+const initAnchorNavigation = () => {
+  const collapseLinks = document.querySelectorAll('.collapse-link');
+
+  if (!collapseLinks.length) {
+    return;
+  }
+
+  collapseLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      // Manteniamo il comportamento precedente per il debug delle sezioni collapse
+      console.log('collapse');
+    });
+  });
+};
+
+const initMobileNavigation = () => {
   const toggler = document.querySelector('.navbar-toggler');
   const menu = document.querySelector('.navigation-mobile');
 
@@ -46,32 +65,34 @@ const initNavigation = () => {
     return;
   }
 
+  const closeMenu = () => {
+    menu.classList.remove('visible');
+    toggler.classList.remove('closed');
+    document.body.classList.remove('no-scroll');
+  };
+
   toggler.addEventListener('click', () => {
-    toggler.classList.toggle('closed');
-    menu.classList.toggle('visible');
-    document.body.classList.toggle('no-scroll', menu.classList.contains('visible'));
+    const isVisible = menu.classList.toggle('visible');
+
+    toggler.classList.toggle('closed', isVisible);
+    document.body.classList.toggle('no-scroll', isVisible);
   });
 
   document
     .querySelectorAll('.navigation-mobile a, .close-menu')
     .forEach((element) => {
-      element.addEventListener('click', () => {
-        document.body.classList.remove('no-scroll');
-        menu.classList.remove('visible');
-        toggler.classList.remove('closed');
-      });
+      element.addEventListener('click', closeMenu);
     });
 };
 
-const initSwiper = () => {
-  const slider = document.querySelector('.block-cards-list');
+const initPassSlider = () => {
+  const sliderElement = document.querySelector('.block-cards-list');
 
-  if (!slider) {
+  if (!sliderElement) {
     return;
   }
 
-  // eslint-disable-next-line no-new
-  new Swiper('.block-cards-list', {
+  new Swiper(sliderElement, {
     spaceBetween: 30,
     navigation: {
       nextEl: '.swiper-button-next',
@@ -96,21 +117,11 @@ const initSwiper = () => {
   });
 };
 
-const initCollapseLinks = () => {
-  document.querySelectorAll('.collapse-link').forEach((link) => {
-    link.addEventListener('click', () => {
-      // Placeholder for collapse interaction
-      // eslint-disable-next-line no-console
-      console.log('collapse');
-    });
-  });
-};
-
 document.addEventListener('DOMContentLoaded', () => {
   window.Swiper = Swiper;
   initFilters();
-  initNavigation();
-  initSwiper();
   initLazyLoad();
-  initCollapseLinks();
+  initAnchorNavigation();
+  initMobileNavigation();
+  initPassSlider();
 });

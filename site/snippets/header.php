@@ -7,7 +7,6 @@
 
   <!-- Preconnect CDN -->
   <link rel="preconnect" href="https://unpkg.com">
-  <link rel="preconnect" href="https://ajax.googleapis.com">
 
   <!-- Preload dei font principali -->
   <link rel="preload" href="<?= url('assets/fonts/FREAKGroteskNext-Bold.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
@@ -84,7 +83,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
   <?php endif; ?>
 
-  <link rel="stylesheet" href="<?= url('assets/build/css/css.css') ?>">
+  <link rel="stylesheet" href="<?= url('assets/build/css/css.css?v=1.0.0') ?>"> <!-- usa versionamento manuale -->
 
   <!-- JS in HEAD solo se necessario -->
 
