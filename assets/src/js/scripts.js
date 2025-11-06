@@ -52,28 +52,40 @@ jQuery(document).ready(function () {
 /* PASS SLIDER */
 
 jQuery(document).ready(function() {
-    var swiper = new Swiper('.block-cards-list', {
-        spaceBetween: 30,  // Space between slides in px
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        grabCursor: true,  // Allows dragging
-        loop: true,        // Optional: Enables continuous loop
-        breakpoints: {
-            640: {
-                slidesPerView: 1,
-                spaceBetween: 20,
-            },
-            768: {
-                slidesPerView: 3,
-                spaceBetween: 30,
-            },
-            1024: {
-                slidesPerView: 4,
-                spaceBetween: 30,
-            },
-          },
+    const sliders = document.querySelectorAll('.block-cards-list');
+
+    sliders.forEach(function(sliderEl) {
+        const nextEl = sliderEl.querySelector('.swiper-button-next');
+        const prevEl = sliderEl.querySelector('.swiper-button-prev');
+
+        const options = {
+            spaceBetween: 30,  // Space between slides in px
+            grabCursor: true,  // Allows dragging
+            loop: true,        // Optional: Enables continuous loop
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+                1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 30,
+                },
+              },
+        };
+
+        if (nextEl && prevEl) {
+            options.navigation = {
+                nextEl: nextEl,
+                prevEl: prevEl,
+            };
+        }
+
+        new Swiper(sliderEl, options);
     });
 });
 
