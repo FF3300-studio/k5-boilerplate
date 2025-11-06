@@ -9,6 +9,45 @@ use Kirby\Cms\Site;
 use Kirby\Cms\Structure;
 use Kirby\Toolkit\Str;
 
+function buildCategoryMarkerMap(Structure $categories): array
+{
+    $map = [];
+
+    foreach ($categories as $category) {
+        $name = (string)$category->nome();
+        $slug = Str::slug($name);
+
+        if ($slug === '') {
+            continue;
+        }
+
+        $markerUrl = null;
+        if ($category->marker()->isNotEmpty()) {
+            $markerFile = $category->marker()->toFile();
+            if ($markerFile) {
+                $markerUrl = $markerFile->url();
+            }
+        }
+
+        $map[$slug] = $markerUrl;
+    }
+
+    return $map;
+}
+
+function resolveCategoryMarker(array $categoryNames, array $markerMap, ?string $fallback): ?string
+{
+    foreach ($categoryNames as $categoryName) {
+        $slug = Str::slug((string)$categoryName);
+
+        if ($slug !== '' && !empty($markerMap[$slug])) {
+            return $markerMap[$slug];
+        }
+    }
+
+    return $fallback;
+}
+
 function getLastValidDate(Page $event): ?int
 {
     $appointments = $event->appuntamenti()->toStructure();
@@ -77,7 +116,7 @@ function getGroupsFromCategories(Structure $categories): array
  */
 function getLocationsArray(
     Pages $collection,
-    Structure $categories,
+    array $categoryMarkerMap,
     ?File $defaultMarker,
     array $activeCategories,
     string $filterLogic
@@ -86,26 +125,15 @@ function getLocationsArray(
 
     $locations = [];
 
+    $defaultMarkerUrl = $defaultMarker ? $defaultMarker->url() : null;
+
     foreach ($filtered as $item) {
         $location = $item->locator()->toLocation();
-        $marker = $defaultMarker ? $defaultMarker->url() : null;
-
-        $itemCategories = $item->child_category_selector()->split(',');
-
-        foreach ($itemCategories as $categoryName) {
-            foreach ($categories as $category) {
-                if (
-                    $category->nome()->value() === $categoryName &&
-                    $category->marker()->isNotEmpty()
-                ) {
-                    $markerFile = $category->marker()->toFile();
-                    if ($markerFile) {
-                        $marker = $markerFile->url();
-                    }
-                    break 2;
-                }
-            }
-        }
+        $marker = resolveCategoryMarker(
+            $item->child_category_selector()->split(','),
+            $categoryMarkerMap,
+            $defaultMarkerUrl
+        );
 
         if ($location && $location->lat() && $location->lon() && $marker) {
             $locations[] = [
