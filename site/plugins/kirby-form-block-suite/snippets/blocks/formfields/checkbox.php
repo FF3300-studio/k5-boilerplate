@@ -14,7 +14,7 @@
                 <?= $formfield->required('attr') ?>
                 <?= $formfield->ariaAttr() ?>
             >
-            <?= $option->label() ?>
+            <?= $option->label()->kirbytext() ?>
             <span class="formfield__checkbox__check"></span>
         </label>
     </div>
