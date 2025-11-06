@@ -1,0 +1,157 @@
+<?php
+
+namespace Site\Helpers\Collection;
+
+use Kirby\Cms\File;
+use Kirby\Cms\Page;
+use Kirby\Cms\Pages;
+use Kirby\Cms\Site;
+use Kirby\Cms\Structure;
+use Kirby\Toolkit\Str;
+
+function getLastValidDate(Page $event): ?int
+{
+    $appointments = $event->appuntamenti()->toStructure();
+    $lastAppointment = $appointments ? $appointments->last() : null;
+
+    if ($lastAppointment && $lastAppointment->giorno()->isNotEmpty()) {
+        return $lastAppointment->giorno()->toDate();
+    }
+
+    return null;
+}
+
+function getFilteredCategories(Pages $collection, Structure $allCategories): Structure
+{
+    $selected = [];
+
+    foreach ($collection as $child) {
+        foreach ($child->child_category_selector()->split() as $category) {
+            $slug = Str::slug($category);
+
+            if (!in_array($slug, $selected, true)) {
+                $selected[] = $slug;
+            }
+        }
+    }
+
+    return $allCategories->filter(
+        static fn($category) => in_array(Str::slug($category->nome()), $selected, true)
+    );
+}
+
+function filterByCategories(Pages $collection, array $activeCategories, string $logic): Pages
+{
+    if (empty($activeCategories)) {
+        return $collection;
+    }
+
+    return $collection->filter(function (Page $item) use ($activeCategories, $logic) {
+        $itemCategories = array_map(
+            static fn(string $category): string => Str::slug($category),
+            $item->child_category_selector()->split()
+        );
+
+        if ($logic === 'and') {
+            return empty(array_diff($activeCategories, $itemCategories));
+        }
+
+        return count(array_intersect($activeCategories, $itemCategories)) > 0;
+    });
+}
+
+function getGroupsFromCategories(Structure $categories): array
+{
+    return array_values(
+        array_unique(
+            array_map(
+                static fn($category) => $category->gruppo()->value(),
+                iterator_to_array($categories)
+            )
+        )
+    );
+}
+
+/**
+ * @return array<int, array<string, mixed>>
+ */
+function getLocationsArray(
+    Pages $collection,
+    Structure $categories,
+    ?File $defaultMarker,
+    array $activeCategories,
+    string $filterLogic
+): array {
+    $filtered = filterByCategories($collection, $activeCategories, $filterLogic);
+
+    $locations = [];
+
+    foreach ($filtered as $item) {
+        $location = $item->locator()->toLocation();
+        $marker = $defaultMarker ? $defaultMarker->url() : null;
+
+        $itemCategories = $item->child_category_selector()->split(',');
+
+        foreach ($itemCategories as $categoryName) {
+            foreach ($categories as $category) {
+                if (
+                    $category->nome()->value() === $categoryName &&
+                    $category->marker()->isNotEmpty()
+                ) {
+                    $markerFile = $category->marker()->toFile();
+                    if ($markerFile) {
+                        $marker = $markerFile->url();
+                    }
+                    break 2;
+                }
+            }
+        }
+
+        if ($location && $location->lat() && $location->lon() && $marker) {
+            $locations[] = [
+                'title' => $item->title()->value(),
+                'lat' => $location->lat(),
+                'lon' => $location->lon(),
+                'url' => $item->url(),
+                'marker' => $marker,
+            ];
+        }
+    }
+
+    return $locations;
+}
+
+function getFormData(
+    Page $formPage,
+    Site $site,
+    ?Pages $responses = null,
+    bool $restrictToDescendants = true
+): array {
+    $responses ??= $restrictToDescendants ? $formPage->index(true) : $site->index(true);
+
+    $responses = $responses->filter(function (Page $response) use ($formPage, $restrictToDescendants) {
+        if ($response->intendedTemplate()->name() !== 'formrequest') {
+            return false;
+        }
+
+        if ($restrictToDescendants) {
+            return $response->isDescendantOf($formPage) || Str::startsWith($response->id(), $formPage->id());
+        }
+
+        return Str::startsWith($response->id(), $formPage->id());
+    });
+
+    $responsesRead = $responses->filter(static fn(Page $response) => $response->content()->get('read')->isNotEmpty());
+
+    $count = $responsesRead->count();
+    $max = $formPage->num_max()->isNotEmpty() ? (int) $formPage->num_max()->value() : null;
+    $available = $max !== null ? max(0, $max - $count) : null;
+
+    $percent = 0;
+    if ($max && $max > 0) {
+        $raw = ($count / $max) * 100;
+        $percent = $count > 0 ? max(5, min(100, $raw)) : 0;
+    }
+
+    return compact('responses', 'responsesRead', 'count', 'max', 'available', 'percent');
+}
