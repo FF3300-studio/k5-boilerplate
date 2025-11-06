@@ -8,6 +8,8 @@ Questo boilerplate nasce per costruire siti editoriali basati su [Kirby 5](https
 
 La struttura modulare sfrutta Kirby come orchestratore dei dati e Vite come toolchain front-end moderna, consentendo di comporre rapidamente esperienze editoriali ricche senza rinunciare al controllo di basso livello.
 
+Ogni pagina può essere trattata come una **collection**: se il redattore abilita i relativi flag nel Panel, la pagina eredita viste dedicate (lista, mappa, calendario), categorie e altri parametri che vengono propagati ai figli. In questo modo le sottopagine reagiscono allo stato del parent (ad esempio attivando filtri se le categorie sono abilitate o mostrando la mappa se la vista geografica è selezionata). Tutte le pagine continuano a usare il template `default`, ma la combinazione dinamica di parametri e layout permette di specializzarle progressivamente man mano che il data entry prende forma: è il contenuto stesso a plasmare la struttura del sito, non viceversa.
+
 ## Soluzioni architetturali principali
 ### Hook di sincronizzazione
 Gli hook definiti in `site/config/hooks.php` propagano automaticamente ai figli i flag ereditati (`collection_options`, `collection_categories_manager_toggle`) quando una pagina viene creata, pubblicata o aggiornata. Questo evita divergenze tra blueprint e contenuti reali, mantenendo coerente la logica condizionale del Panel.【F:site/config/hooks.php†L1-L69】
