@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://ajax.googleapis.com">
 
   <!-- Preload dei font principali -->
-  <link rel="preload" href="<?= url('assets/fonts/FREAKGroteskNext-Bold.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
-  <link rel="preload" href="<?= url('assets/fonts/InstrumentSans.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
+  <link rel="preload" href="<?= url('/assets/build/fonts/FREAKGroteskNext-Bold.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
+  <link rel="preload" href="<?= url('/assets/build/fonts/InstrumentSans.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
 
   <?php if($site->fb_domain_verification()->isNotEmpty()): ?>
     <meta name="facebook-domain-verification" content="<?= htmlspecialchars($site->fb_domain_verification()) ?>" />
@@ -87,7 +87,7 @@
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-  <link rel="stylesheet" href="<?= url('assets/build/node_modules/bootstrap/dist/css/bootstrap.css') ?>">
+  <link rel="stylesheet" href="<?= url('node_modules/bootstrap/dist/css/bootstrap.css') ?>">
   <link rel="stylesheet" href="<?= url('assets/build/css/css.css?v=1.0.0') ?>"> <!-- usa versionamento manuale -->
 
   <!-- JS in HEAD solo se necessario -->
