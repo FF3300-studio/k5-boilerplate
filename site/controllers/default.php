@@ -2,6 +2,7 @@
 
 // Importa le utility di Kirby, es. per creare slug
 use Kirby\Toolkit\Str;
+use function Site\Helpers\Collection\buildCategoryMarkerMap;
 use function Site\Helpers\Collection\filterByCategories;
 use function Site\Helpers\Collection\getFilteredCategories;
 use function Site\Helpers\Collection\getFormData;
@@ -16,6 +17,7 @@ return function ($page, $site, $kirby) {
     // ====== INIZIALIZZAZIONE ======
     $collection = $page->children()->listed(); // Prende le pagine figlie visibili
     $allCategories = $page->parent_category_manager()->toStructure(); // Tutte le categorie disponibili
+    $categoryMarkerMap = buildCategoryMarkerMap($allCategories); // Mappa slug => markerUrl
     $activeCategories = param('category') ? array_map('Str::slug', explode('+', param('category'))) : []; // Legge le categorie attive dall'URL
     $filterLogic = param('logic') === 'and' ? 'and' : 'or'; // Logica di filtro (default OR)
 
@@ -49,7 +51,7 @@ return function ($page, $site, $kirby) {
     $latitude = $center_page ? $center_page->locator()->toLocation()->lat() : '0'; // Latitudine del centro
     $longitude = $center_page ? $center_page->locator()->toLocation()->lon() : '0'; // Longitudine del centro
     $default_marker = $page->default_marker()->toFiles()->first(); // Marker di default
-    $locations_array = getLocationsArray($collection, $allCategories, $default_marker, $activeCategories, $filterLogic); // Marker mappa
+    $locations_array = getLocationsArray($collection, $categoryMarkerMap, $default_marker, $activeCategories, $filterLogic); // Marker mappa
 
     // ====== FORM ======
     $formData = fn($formPage = null) => getFormData($formPage ?? $page, $site); // Funzione chiusa per gestire form per ogni pagina

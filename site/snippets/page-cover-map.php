@@ -23,23 +23,19 @@ if ($collection_parent && $collection_parent->hasChildren()):
 
 
 <?php 
+    $categoryMarkerMap = isset($categories) ? \Site\Helpers\Collection\buildCategoryMarkerMap($categories) : [];
+    $defaultMarkerUrl = $parent->default_marker()->toFile()?->url();
+
     $locations_array = [];
-    foreach($collection as $item): 
+    foreach($collection as $item):
         $location = $item->locator()->toLocation();
         $child_categories = $item->child_category_selector()->split(','); // Categorie associate al child
 
-        // Default marker
-        $item_marker = $parent->default_marker()->toFile()?->url() ?? '';
-
-        // Trova il marker specifico per la prima categoria valida
-        foreach($child_categories as $child_category):
-            foreach($categories as $category):
-                if ($category->nome()->value() == $child_category && $category->marker()->isNotEmpty()):
-                    $item_marker = $category->marker()->toFile()->url();
-                    break 2; // Esci dai cicli
-                endif;
-            endforeach;
-        endforeach;
+        $item_marker = \Site\Helpers\Collection\resolveCategoryMarker(
+            $child_categories,
+            $categoryMarkerMap,
+            $defaultMarkerUrl
+        );
 
         if ($location && $location->lat() && $location->lon()) {
             array_push($locations_array, [
