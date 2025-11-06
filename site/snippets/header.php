@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://ajax.googleapis.com">
 
   <!-- Preload dei font principali -->
-  <link rel="preload" href="<?= url('/assets/build/fonts/FREAKGroteskNext-Bold.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
-  <link rel="preload" href="<?= url('/assets/build/fonts/InstrumentSans.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
+  <!-- <link rel="preload" href="<?= url('/assets/build/fonts/FREAKGroteskNext-Bold.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous">
+  <link rel="preload" href="<?= url('/assets/build/fonts/InstrumentSans.ttf') ?>" as="font" type="font/ttf" crossorigin="anonymous"> -->
 
   <?php if($site->fb_domain_verification()->isNotEmpty()): ?>
     <meta name="facebook-domain-verification" content="<?= htmlspecialchars($site->fb_domain_verification()) ?>" />
