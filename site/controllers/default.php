@@ -5,7 +5,7 @@ use Kirby\Toolkit\Str;
 use function Site\Helpers\Collection\buildCategoryMarkerMap;
 use function Site\Helpers\Collection\filterByCategories;
 use function Site\Helpers\Collection\getFilteredCategories;
-use function Site\Helpers\Collection\getFormData;
+use function Site\Helpers\Collection\formDataFor;
 use function Site\Helpers\Collection\getGroupsFromCategories;
 use function Site\Helpers\Collection\getLastValidDate;
 use function Site\Helpers\Collection\getLocationsArray;
@@ -53,9 +53,6 @@ return function ($page, $site, $kirby) {
     $default_marker = $page->default_marker()->toFiles()->first(); // Marker di default
     $locations_array = getLocationsArray($collection, $categoryMarkerMap, $default_marker, $activeCategories, $filterLogic); // Marker mappa
 
-    // ====== FORM ======
-    $formData = fn($formPage = null) => getFormData($formPage ?? $page, $site); // Funzione chiusa per gestire form per ogni pagina
-
     // ====== OUTPUT VERSO IL TEMPLATE ======
     return compact(
         'allCategories',
@@ -67,10 +64,9 @@ return function ($page, $site, $kirby) {
         'gruppi',
         'futureEvents',
         'pastEvents',
-        'formData',
         'zoom',
         'latitude',
         'longitude',
         'locations_array'
-    ) + ['filter_counter' => 0]; // Aggiunta manuale del contatore filtri (placeholder)
+    ) + ['filter_counter' => 0] + formDataFor($page); // Aggiunta manuale del contatore filtri (placeholder)
 };
