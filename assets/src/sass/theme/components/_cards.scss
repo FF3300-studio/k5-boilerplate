@@ -159,25 +159,22 @@ a.related span {
 .single-cards {
   padding: 0;
   margin: 0 $spacer; 
-  min-width: calc(25% - $spacer*2); 
-  max-width: calc(33% - $spacer*2); 
+  min-width: calc(20% - $spacer*2); 
+  max-width: calc(50% - $spacer*2); 
   flex-grow: 0;
   margin-bottom: $spacer * 2;
   @include media-breakpoint-up(xl) {
     margin: 0 $spacer-xl; 
     margin-bottom: $spacer-xl * 2;
+    min-width: calc(20% - $spacer-sm*2); 
+    max-width: calc(25% - $spacer-sm*2); 
   }
   @include media-breakpoint-down(md) {
     margin: 0 $spacer-sm; 
     margin-bottom: $spacer-sm * 2;
   }
+  
   @include media-breakpoint-down(sm) {
-    min-width: calc(50% - $spacer-sm*2); 
-    max-width: calc(50% - $spacer-sm*2); 
-    margin: 0 $spacer-sm; 
-    margin-bottom: $spacer-sm * 2;
-  }
-  @include media-breakpoint-down(xs) {
     min-width: calc(100% - $spacer-sm*2); 
     max-width: calc(100% - $spacer-sm*2); 
     flex-grow: 1;

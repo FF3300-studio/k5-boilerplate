@@ -4211,70 +4211,7 @@ a:hover{
 		}
 	}
 }
-* .formfield__radio, .formfield__checkbox {
-	width: fit-content!important;
-	margin-top: 5px!important;
-}
-* .formfield__option {
-	width: fit-content!important;
-}
-* .formfield__option label{
-	width: fit-content!important;
-	display: flex;
-	align-items: flex-start;
-	justify-content: flex-start;
-	flex-wrap: nowrap;
-	flex-direction: row;
-	margin-bottom: 5px;
-	p{
-		margin: 0 auto;
-		margin-top: 0!important;
-		margin-left: 4px!important;
-		text-transform: lowercase!important;
-	}
-}
-* .formblock__message__list{
-	margin: $spacer 0!important;
-}
-.formblock__message__list__item{
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: flex-start;
-	color: $color-theme-bis!important;
-}
-* .formblock__option__container{
-	margin: 0 auto!important;
-	width: 100%;
-	text-align: left;
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	font-size: 24px;
-	padding: $spacer!important;
 
-	.formblock_field__label{
-		text-transform: uppercase!important;
-	}
-	input{
-		transform: scale(1.5);
-		margin-right: $spacer/2!important;
-	}
-}
-* .formfield__label__text {
-	font-size: $small;
-	font-weight: 700;
-}
-* .formblock .formblock__submit input{
-	text-transform: capitalize!important;
-	font-weight: 700!important;
-}
-
-* label.formfield__option__label {
-	display: flex!important;
-	flex-direction: row!important;
-	margin: 0!important;
-}
 * figure.video{
 	margin-right: auto!important;
 	margin-left: auto!important;

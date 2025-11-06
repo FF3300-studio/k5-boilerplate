@@ -136,10 +136,19 @@
 }
 * .formfield__radio, .formfield__checkbox {
 	width: fit-content!important;
-	margin-top: 5px!important;
+	margin-top: 3px!important;
 }
 * .formfield__option {
 	width: fit-content!important;
+	width: fit-content!important;
+	display: flex!important;
+	flex-direction: row!important;
+	flex-wrap: nowrap!important;
+	align-items: center!important;
+	margin-bottom: 4px!important;
+	&:last-of-type{
+		margin-bottom: 0!important;
+	}
 }
 * .formfield__option label{
 	width: fit-content!important;
