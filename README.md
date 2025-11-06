@@ -44,7 +44,7 @@ Gli asset Sass risiedono in `assets/src/sass/`:
 
 Questa corrispondenza facilita l'evoluzione congiunta tra markup e stile: ogni snippet principale ha il proprio partial SCSS omonimo, mantenendo l'architettura leggibile.
 
-## Istanziazione del progetto
+## Come installare la boilerplate 
 Per avviare un nuovo progetto a partire da questo boilerplate:
 1. Clonare il repository e installare le dipendenze PHP con `composer install` per recuperare Kirby e i plugin dichiarati in `composer.json`.
 2. Installare le dipendenze front-end con `npm install`.
