@@ -52,7 +52,7 @@
        <meta name="twitter:image" content="<?= $page->immagine()->toFile()->url() ?>">
     <?php endif; ?>
   <?php else: ?>
-    <title>SOS — <?= $page->title() ?></title>
+    <title><?= $page->title() ?></title>
     <meta property="og:type" content="article" />
     <meta property="og:title" content="<?= $page->title() ?>" />
     <meta name="twitter:title" content="<?= $page->title() ?>" />
