@@ -52,10 +52,17 @@
        <meta name="twitter:image" content="<?= $page->immagine()->toFile()->url() ?>">
     <?php endif; ?>
   <?php else: ?>
-    <title><?= $page->title() ?></title>
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="<?= $page->title() ?>" />
-    <meta name="twitter:title" content="<?= $page->title() ?>" />
+    <?php if($page->uri() == 'home'): ?>
+      <title><?= $site->title() ?></title>
+      <meta property="og:type" content="article" />
+      <meta property="og:title" content="<?= $site->title() ?>" />
+      <meta name="twitter:title" content="<?= $site->title() ?>" />
+    <?php else: ?>
+      <title><?= $site->title() ?> – <?= $page->title() ?></title>
+      <meta property="og:type" content="article" />
+      <meta property="og:title" content="<?= $site->title() ?> – <?= $page->title() ?>" />
+      <meta name="twitter:title" content="<?= $site->title() ?> – <?= $page->title() ?>" />
+    <?php endif; ?>
     <meta name="description" content="<?= $page->descrizione()->cleanText() ?>">
     <meta name="twitter:description" content="<?= $page->descrizione()->cleanText() ?>">
     <meta property="og:description" content="<?= $page->descrizione()->cleanText() ?>" />
