@@ -51,6 +51,7 @@ fields:
 
   default_marker:
     extends: fields/svg_marker
+    whenQuery: collection_options = 'map' && collection_toggle = true
 
   locator:
     extends: fields/locator

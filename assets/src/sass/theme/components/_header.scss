@@ -193,11 +193,11 @@
           @extend %extrasmall;
           @extend %button;
           display: inline-block;
-          padding: 6px 10px;
+          padding: 6px 8px;
           font-weight: 700;
           background-color: $color-white;
           color: $color-black;
-          margin-left: $spacer;
+          margin-left: 6px;
           border: 2px solid $color-black;
           &:hover {
             background-color: $color-hover;

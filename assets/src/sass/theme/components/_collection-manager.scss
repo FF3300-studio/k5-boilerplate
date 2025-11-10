@@ -6,15 +6,13 @@
 
 .cm-block {
   --cm-gap: #{$spacer};
-  margin: 0 auto $spacer*2;
+  margin: 0 auto;
 
   @include media-breakpoint-up(xl) {
     --cm-gap: #{$spacer-xl};
-    margin-bottom: $spacer-xl*2;
   }
   @include media-breakpoint-down(sm) {
     --cm-gap: #{$spacer-sm};
-    margin-bottom: $spacer-sm*2;
   }
 }
 
@@ -122,13 +120,13 @@
   padding: 0;
 }
 .cm-carousel .single-cards, .cm-carousel .col-lg-4 {
-    min-width: 27vw!important;
+    min-width: 300px!important;
     max-width: calc(33vw - $spacer)!important;
     width: auto!important;
     margin: 0!important;
     margin-bottom: $spacer!important;
     @include media-breakpoint-up(xl) { 
-    max-width: 27vw!important;
+    min-width: 27vw!important;
     }
     @include media-breakpoint-down(sm) { 
     min-width: 75vw!important;
