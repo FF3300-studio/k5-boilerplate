@@ -97,14 +97,12 @@
 
         <?php if($page->parent() !== NULL AND $page->parent()->collection_options() == "calendar"): ?>
             <?php if(strtotime($page->deadline()) >= strtotime('today')): ?>
-            <hr style="margin: 0; margin-top: 15px; margin-bottom: 15px; border: none; border-bottom: 1px solid gray;">
             <?php snippet('form-request-counter',[
             'page' => $page,
             ])?>
             <?php endif; ?>
         <?php else: ?>
             <?php if(strtotime($item->deadline()) >= strtotime('today')): ?>
-            <hr style="margin: 0; margin-top: 15px; margin-bottom: 15px; border: none; border-bottom: 1px solid gray;">
             <?php snippet('form-request-counter',[
             'page' => $item,
             ])?>
