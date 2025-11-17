@@ -26,13 +26,13 @@ if ($block->location() == 'web') {
         <a href="<?= $link->url() ?>" title="<?= $block->id() ?>">
         <?php if($image->extension() == 'gif'): ?>
             <img    class="lazyload"
-                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>px; min-width: <?= $min_width ?>px; max-height: <?= $max_height ?>px; min-height: <?= $min_height ?>px;"
+                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>; min-width: <?= $min_width ?>; max-height: <?= $max_height ?>; min-height: <?= $min_height ?>;"
                     src="<?= $src ?>"
                     data-src="<?= $src ?>" 
                     alt="<?= $block->alt()->or($image->alt()) ?>">
         <?php else: ?>
             <img    class="lazyload"
-                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>px; min-width: <?= $min_width ?>px; max-height: <?= $max_height ?>px; min-height: <?= $min_height ?>px;"
+                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>; min-width: <?= $min_width ?>; max-height: <?= $max_height ?>; min-height: <?= $min_height ?>;"
                     data-src="<?= $image->thumb()->url() ?>" 
                     alt="<?= $block->alt()->or($image->alt()) ?>">
         <?php endif; ?>
@@ -42,13 +42,13 @@ if ($block->location() == 'web') {
             <img    class="lazyload"
                     src="<?= $src ?>"
                     data-src="<?= $src ?>" 
-                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>px; min-width: <?= $min_width ?>px; max-height: <?= $max_height ?>px; min-height: <?= $min_height ?>px;"
+                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>; min-width: <?= $min_width ?>; max-height: <?= $max_height ?>; min-height: <?= $min_height ?>;"
                     alt="<?= $block->alt()->or($image->alt()) ?>">
         <?php else: ?>
             <img    class="lazyload"
                     src="<?= $src ?>"
                     data-src="<?= $src ?>" 
-                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>px; min-width: <?= $min_width ?>px; max-height: <?= $max_height ?>px; min-height: <?= $min_height ?>px;"
+                    style="aspect-ratio: <?= $ratio ?>; object-fit: cover; max-width: <?= $max_width ?>; min-width: <?= $min_width ?>; max-height: <?= $max_height ?>; min-height: <?= $min_height ?>;"
                     alt="<?= $block->alt()->or($image->alt()) ?>">
         <?php endif; ?>
     <?php endif ?>
